@@ -9,7 +9,8 @@
     </div>
     <div id="account">
         <div sec:authorize="isAuthenticated()" th:inline="text">
-            <span>Hello [[${#httpServletRequest.remoteUser}]]!</span>
+            <!--/*<span>Hello [[${#httpServletRequest.remoteUser}]]!</span>*/-->
+            Hello <span sec:authentication="principal.firstName">${name}</span>!
             <a href="javascript:logout()">Log Out</a>
             <form id="logoutForm" method="POST" th:action="@{/logout}">
             </form>
