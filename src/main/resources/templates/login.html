@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>AWS Monitor</title>
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+</head>
+<body>
+<!--/*<div th:replace="layout/header :: header"/>*/-->
+<div style="text-align: center; margin: 100px auto;">
+    <div id="loginbox" th:if="!${param.logout}">
+        <div class="title">Log In</div>
+        <div th:if="${param.error}" class="alert alert-danger">
+            Incorrect username or password.
+        </div>
+        <!--/*
+        <div th:if="${param.logout}" class="alert alert-info">
+            You have been logged out.
+        </div>
+        */-->
+        <form id="loginForm" th:action="@{/login}" method="post">
+            <div class="field-row">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text"/>
+            </div>
+            <div class="field-row">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password"/>
+            </div>
+            <div class="field-row">
+                <input id="remember-me" name="remember-me" type="checkbox"/>
+                <label class="checkbox" for="remember-me">Keep me logged in</label>
+            </div>
+            <div class="field-row">
+                <button class="btn btn-primary" type="submit">Log in</button>
+            </div>
+        </form>
+    </div>
+    <div id="loginbox" th:if="${param.logout}">
+        <div class="title">Log Out</div>
+        <div>
+            You have been logged out.
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a th:href="@{/login}"><button class="btn btn-primary">OK</button></a>
+        </div>
+    </div>
+</div>
+<!--/*<div th:replace="layout/footer :: footer"/>*/-->
+<script>
+    $(function () {
+        $('#username').focus();
+        $('form').submit(function (event) {
+            if (!$('#username').val()) {
+                $('#username').focus();
+                return false;
+            }
+            if (!$('#password').val()) {
+                $('#password').focus();
+                return false;
+            }
+        });
+    });
+</script>
+<script th:if="${param.error != null or param.logout != null}">
+    $('#loginbox .alert').show().delay(2000).fadeOut(500);
+</script>
+
+</body>
+</html>

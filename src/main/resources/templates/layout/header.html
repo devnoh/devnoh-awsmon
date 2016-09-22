@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<body>
+<div id="header" th:fragment="header">
+    <div id="brand">
+        <h1>
+            <a href="/">AWS Monitor</a>
+        </h1>
+    </div>
+    <div id="account">
+        <div sec:authorize="isAuthenticated()" th:inline="text">
+            <span>Hello [[${#httpServletRequest.remoteUser}]]!</span>
+            <a href="javascript:logout()">Log Out</a>
+            <form id="logoutForm" method="POST" th:action="@{/logout}">
+            </form>
+            <script>
+                function logout() {
+                    document.getElementById("logoutForm").submit();
+                }
+            </script>
+        </div>
+    </div>
+</div>
+</body>
+</html>

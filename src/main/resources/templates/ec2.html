@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AWS Monitor</title>
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+    <link rel="stylesheet" th:href="@{css/tablesorter.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.tablesorter.js}"></script>
+</head>
+<body>
+<div th:replace="layout/header :: header"/>
+<div id="content">
+    <div th:replace="layout/tabmenu :: tabmenu(menu='ec2')"/>
+
+    <div id="tabcontent">
+
+        <h1>Elastic Compute Cloud (EC2)</h1>
+
+        <div style="text-align: right; margin-top: -30px;">
+            <form action="@{/ec2}" method="get">
+                <select id="region" name="region" onchange="document.forms[0].submit();">
+                    <option value="">-- region --</option>
+                </select>
+            </form>
+        </div>
+
+        <table id="tableList" class="tablesorter">
+            <thead>
+            <tr>
+                <!--<th style="text-align: center; width: 4%;">No</th>-->
+                <th>Name</th>
+                <th>Role</th>
+                <th>Instance ID</th>
+                <th>Type</th>
+                <th>State</th>
+                <th>Platform</th>
+                <th>Private IP</th>
+                <th>Public IP</th>
+                <th>Security Groups</th>
+                <th>Launch Time</th>
+                <th>Uptime</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ec2Info : ${ec2List}" th:id="'tr' + ${ec2Info.instanceId}">
+                <td th:text="${ec2Info.name}" style="font-weight: bold;"></td>
+                <td th:text="${ec2Info.role}">${ec2Info.role}</td>
+                <td th:text="${ec2Info.instanceId}" style="white-space: nowrap"></td>
+                <td th:text="${ec2Info.instanceType}"></td>
+                <td th:text="${ec2Info.platform}"></td>
+                <td th:text="${ec2Info.privateIp}"></td>
+                <td th:text="${ec2Info.publicIp}">}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<div th:replace="layout/footer :: footer"/>
+
+<script>
+    $('#tableList').tablesorter();
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+spring:
+  devtools:
+    restart:
+      enabled: true
+  thymeleaf:
+    cache: false
+
+logging:
+  level:
+    devnoh: DEBUG
+
+error:
+  whitelabel:
+    enabled: false
