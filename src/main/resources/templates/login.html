@@ -11,7 +11,7 @@
 <body>
 <!--/*<div th:replace="layout/header :: header"/>*/-->
 <div style="text-align: center; margin: 100px auto;">
-    <div id="loginbox" th:if="!${param.logout}">
+    <div id="loginbox">
         <div class="title">Log In</div>
         <div th:if="${param.error}" class="alert alert-danger">
             Incorrect username or password.
@@ -38,15 +38,6 @@
                 <button class="btn btn-primary" type="submit">Log in</button>
             </div>
         </form>
-    </div>
-    <div id="loginbox" th:if="${param.logout}">
-        <div class="title">Log Out</div>
-        <div>
-            You have been logged out.
-        </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <a th:href="@{/login}"><button class="btn btn-primary">OK</button></a>
-        </div>
     </div>
 </div>
 <!--/*<div th:replace="layout/footer :: footer"/>*/-->

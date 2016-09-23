@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>AWS Monitor</title>
+    <link rel="stylesheet" th:href="@{css/style.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+</head>
+<body>
+<!--/*<div th:replace="layout/header :: header"/>*/-->
+<div style="text-align: center; margin: 100px auto;">
+    <div id="loginbox">
+        <div class="title">Log Out</div>
+        <div>
+            You have been logged out.
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <a th:href="@{/login}"><button class="btn btn-primary">OK</button></a>
+        </div>
+    </div>
+</div>
+<!--/*<div th:replace="layout/footer :: footer"/>*/-->
+</body>
+</html>
