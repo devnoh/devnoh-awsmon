@@ -1,16 +1,11 @@
-package devnoh.awsmon;
+package devnoh.awsmon.repository;
 
 import devnoh.awsmon.entity.User;
-import devnoh.awsmon.repository.UserRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -21,13 +16,11 @@ import static org.junit.Assert.assertEquals;
 @DataJpaTest
 public class UserRepositoryTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserRepositoryTest.class);
-
     @Autowired
     private UserRepository repository;
 
     @Test
-    public void saveUser() throws Exception {
+    public void testSave() {
         User user = new User();
         user.setUsername("user1");
         user.setPassword("pass1");
@@ -35,13 +28,25 @@ public class UserRepositoryTest {
         user.setLastName("Last");
         user.setEmail("user1@domain.com");
         User saved = repository.save(user);
-        logger.debug("saved={}", saved);
+        System.out.println("saved=" + saved);
 
         User found = repository.findOne(saved.getId());
+        System.out.println("found=" + found);
         assertEquals("user1", found.getUsername());
         assertEquals("pass1", found.getPassword());
         assertEquals("First", found.getFirstName());
         assertEquals("Last", found.getLastName());
         assertEquals("user1@domain.com", found.getEmail());
+    }
+
+    @Test
+    public void testFindByUsername() {
+        User user = repository.findByUsername("user");
+        System.out.println("user=" + user);
+        assertEquals("user", user.getUsername());
+        assertEquals("user", user.getPassword());
+        assertEquals("User", user.getFirstName());
+        assertEquals("Noh", user.getLastName());
+        assertEquals("user@domain.com", user.getEmail());
     }
 }
