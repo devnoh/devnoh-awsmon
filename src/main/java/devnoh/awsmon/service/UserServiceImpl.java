@@ -1,5 +1,7 @@
 package devnoh.awsmon.service;
 
+import devnoh.awsmon.entity.User;
+import devnoh.awsmon.repository.RoleRepository;
 import devnoh.awsmon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    RoleRepository roleRepository;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDetails userDetails = userRepository.findByUsername(username);
@@ -25,5 +30,9 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("User '" + username + "' not found.");
         }
         return userDetails;
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }
