@@ -9,14 +9,14 @@ import java.lang.annotation.RetentionPolicy;
  * Created by devnoh on 9/23/16.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@WithSecurityContext(factory = WithMockCustomSecurityContextFactory.class)
+@WithSecurityContext(factory = WithMockCustomUserSecurityContextFactory.class)
 public @interface WithMockCustomUser {
 
     String username() default "user";
 
     String password() default "pass";
 
-    String firstName() default "Sehwan";
+    String firstName() default "User";
 
     String lastName() default "Noh";
 

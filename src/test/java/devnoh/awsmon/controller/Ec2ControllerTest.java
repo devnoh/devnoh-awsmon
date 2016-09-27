@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -23,24 +24,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(Ec2Controller.class)
+//@AutoConfigureMockMvc(secure = true)
 public class Ec2ControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void testHome() throws Exception {
+    public void testUnauthorized() throws Exception {
         mockMvc.perform(get("/ec2"))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin", roles = "USER")
-    //@WithUserDetails(value="admin", userDetailsServiceBeanName = "userDetailsService")
-    //@WithMockCustomUser(username = "admin", password = "admin", roles = "USER")
-    public void testHomeAhthorized() throws Exception {
+    @WithMockCustomUser(username = "user", password = "user", roles = {"USER"})
+    public void testAuthorized() throws Exception {
         mockMvc.perform(get("/ec2"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("home"));
+                .andExpect(view().name("ec2"));
     }
 }

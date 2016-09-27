@@ -28,6 +28,13 @@ public class Role implements GrantedAuthority {
 //    @JsonIgnore
 //    private Set<User> users = new HashSet<User>();
 
+    public Role() {
+    }
+
+    public Role(final String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
