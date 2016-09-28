@@ -18,71 +18,7 @@ import java.util.Date;
  */
 public class DateUtil {
 
-	public static final String ISO_DATE_PATTERN = "yyyy-MM-dd";
-	public static final String ISO_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
-	public static final String LOCALIZED_DATE_PATTERN = "M/d/yyyy";
-	public static final String LOCALIZED_DATE_TIME_PATTERN = "M/d/yyyy HH:mm:ss";
-
-	public static String formatDate(Date date) {
-		return formatDateTime(date, ISO_DATE_PATTERN);
-	}
-
-	public static String formatDateTime(Date date) {
-		return formatDateTime(date, ISO_DATE_TIME_PATTERN);
-	}
-
-	public static Date parseDate(String date) {
-		return parseDateTime(date, ISO_DATE_PATTERN);
-	}
-
-	public static Date parseDateTime(String date) {
-		return parseDateTime(date, ISO_DATE_TIME_PATTERN);
-	}
-
-	public static String formatLocalizedDate(Date date) {
-		return formatDateTime(date, LOCALIZED_DATE_PATTERN);
-	}
-
-	public static String formatLocalizedDateTime(Date date) {
-		return formatDateTime(date, LOCALIZED_DATE_TIME_PATTERN);
-	}
-
-	public static Date parseLocalizedDate(String date) {
-		return parseDateTime(date, LOCALIZED_DATE_PATTERN);
-	}
-
-	public static Date parseLocalizedDateTime(String date) {
-		return parseDateTime(date, LOCALIZED_DATE_TIME_PATTERN);
-	}
-
-	public static String formatLocalizedDate(long millis) {
-		return formatLocalizedDate(new Date(millis));
-	}
-
-	public static String formatLocalizedDateTime(long millis) {
-		return formatLocalizedDate(new Date(millis));
-	}
-
-	public static String formatDateTime(Date date, String pattern) {
-		if (date == null) {
-			return "";
-		}
-		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-		return sdf.format(date);
-	}
-
-	public static Date parseDateTime(String strDate, String pattern) {
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-			return sdf.parse(strDate);
-		} catch (ParseException e) {
-			throw new IllegalArgumentException(e.getMessage());
-		}
-	}
-
-	public static Date getToday() {
-		return parseDate(formatDate(new Date()));
-	}
+	// TODO: Java 8 Date & Time
 
 	public static int getElapsedDays(long time) {
 		return (int) Math.floor(time / (24 * 60 * 60 * 1000D));

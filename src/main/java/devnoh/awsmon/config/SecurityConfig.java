@@ -28,9 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
-//    @Autowired
-//    private UserRepository userRepository;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -56,7 +53,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //auth.userDetailsService(userDetailsService());
         auth.userDetailsService(userService);
     }
 
@@ -64,20 +60,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public SpringSecurityDialect securityDialect() {
         return new SpringSecurityDialect();
     }
-
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        return new UserDetailsService() {
-//            @Override
-//            public UserDetails loadUserByUsername(String username)
-//                    throws UsernameNotFoundException {
-//                UserDetails userDetails = userRepository.findByUsername(username);
-//                if (userDetails != null) {
-//                    return userDetails;
-//                }
-//                throw new UsernameNotFoundException("User '" + username + "' not found.");
-//            }
-//        };
-//    }
-
 }

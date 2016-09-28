@@ -35,5 +35,4 @@ public class ServerWebTests {
         String body = this.restTemplate.getForObject("/login", String.class);
         System.out.println(body);
     }
-
 }
