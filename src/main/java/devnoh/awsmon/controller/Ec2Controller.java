@@ -52,6 +52,10 @@ public class Ec2Controller {
 		String region = ServletRequestUtils.getStringParameter(request, "region", "us-west-1");
 		logger.debug("region=" + region);
 
+		if (region != null) {
+			throw new RuntimeException("TEST EXCEPTION");
+		}
+
 		List<Ec2Instance> ec2List = loadEc2InstanceList(region);
 		int runningCount = 0;
 		for (Ec2Instance ec2Info : ec2List) {

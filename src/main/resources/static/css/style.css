@@ -218,6 +218,10 @@ h1.error {
     z-index: 2;
 }
 
+#tabcontent.error {
+    border-top: 1px solid #777;
+}
+
 /* login
 ----------------------------------------------------------*/
 #loginbox {

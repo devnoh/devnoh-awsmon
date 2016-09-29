@@ -9,14 +9,9 @@
 <body>
 <div th:replace="layout/header :: header"/>
 <div id="content">
-    <div th:replace="layout/tabmenu :: tabmenu"/>
-
-    <div id="tabcontent">
-
-        <h1 class="error">Error</h1>
-
+    <div id="tabcontent" class="error">
+        <h1 class="error" th:text="'Server Error ' + ${status}"></h1>
         <p th:text="${message}"></p>
-
     </div>
 </div>
 <div th:replace="layout/footer :: footer"/>
