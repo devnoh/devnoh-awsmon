@@ -11,10 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Class description goes here.
- * 
- * @author Sehwan Noh (devnoh@gmail.com)
- * @version 1.0
+ * Created by devnoh on 9/16/16.
  */
 public class DateUtil {
 

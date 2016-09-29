@@ -52,10 +52,6 @@ public class Ec2Controller {
 		String region = ServletRequestUtils.getStringParameter(request, "region", "us-west-1");
 		logger.debug("region=" + region);
 
-		if (region != null) {
-			throw new RuntimeException("TEST EXCEPTION");
-		}
-
 		List<Ec2Instance> ec2List = loadEc2InstanceList(region);
 		int runningCount = 0;
 		for (Ec2Instance ec2Info : ec2List) {
@@ -127,7 +123,7 @@ public class Ec2Controller {
 			ec2Info.setElapse(DateUtil.getElapsedTimeString2(System.currentTimeMillis()
 					- instance.getLaunchTime().getTime()));
 			ec2Info.setSecurityGroups(securityGroups);
-			// if (instance.getState().getName().equals("running")) {
+			// if (instance.getState().getCode().equals("running")) {
 			// runningCount++;
 			// }
 			ec2List.add(ec2Info);

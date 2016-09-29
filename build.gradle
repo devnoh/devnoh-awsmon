@@ -27,7 +27,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.34'
+        mavenBom 'com.amazonaws:aws-java-awssdk-bom:1.11.34'
     }
 }
 
@@ -39,11 +39,11 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE")
     compile("com.h2database:h2")
-	compile("com.amazonaws:aws-java-sdk-ec2")
-	compile("com.amazonaws:aws-java-sdk-s3")
-	compile("com.amazonaws:aws-java-sdk-rds")
-	compile("com.amazonaws:aws-java-sdk-route53")
-    //compile("com.amazonaws:aws-java-sdk:1.11.34")
+	compile("com.amazonaws:aws-java-awssdk-ec2")
+	compile("com.amazonaws:aws-java-awssdk-s3")
+	compile("com.amazonaws:aws-java-awssdk-rds")
+	compile("com.amazonaws:aws-java-awssdk-route53")
+    //compile("com.amazonaws:aws-java-awssdk:1.11.34")
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
     testCompile("org.springframework.security:spring-security-test")
