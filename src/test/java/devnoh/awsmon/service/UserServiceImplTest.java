@@ -1,6 +1,8 @@
 package devnoh.awsmon.service;
 
+import devnoh.awsmon.entity.Role;
 import devnoh.awsmon.entity.User;
+import devnoh.awsmon.repository.RoleRepository;
 import devnoh.awsmon.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +32,9 @@ public class UserServiceImplTest {
     @MockBean
     UserRepository userRepository;
 
+    @MockBean
+    RoleRepository roleRepository;
+
     @InjectMocks
     UserServiceImpl userService;
 
@@ -53,11 +58,20 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testSaveDepartment() {
+    public void testSaveUser() {
         User user = new User();
         user.setUsername("user1");
         user.setPassword("pass1");
         when(userRepository.save(user)).thenReturn(user);
         assertEquals(userService.saveUser(user), user);
+    }
+
+    @Test
+    public void testSaveRole() {
+        Role role = new Role();
+        role.setName("role1");
+        role.setDescription("desc1");
+        when(roleRepository.save(role)).thenReturn(role);
+        assertEquals(userService.saveRole(role), role);
     }
 }

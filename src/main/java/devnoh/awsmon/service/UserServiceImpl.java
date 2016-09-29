@@ -1,5 +1,6 @@
 package devnoh.awsmon.service;
 
+import devnoh.awsmon.entity.Role;
 import devnoh.awsmon.entity.User;
 import devnoh.awsmon.repository.RoleRepository;
 import devnoh.awsmon.repository.UserRepository;
@@ -34,5 +35,9 @@ public class UserServiceImpl implements UserService {
 
     public User saveUser(User user) {
         return userRepository.save(user);
+    }
+
+    public Role saveRole(Role role) {
+        return roleRepository.save(role);
     }
 }
