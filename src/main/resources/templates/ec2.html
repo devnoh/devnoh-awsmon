@@ -79,8 +79,17 @@
             </tbody>
         </table>
 
+        <div style="float: right; text-align: right; font-size: 9px; color: #666;">
+            Updated:
+            <span th:text="${#dates.format(updated, 'yyyy-MM-dd HH:mm:ss')}"></span>
+        </div>
+        <div th:inline="text">
+            [[${runningCount}]] of [[${ec2List.size()}]] instances are running.
+        </div>
+
     </div>
 </div>
+
 <div th:replace="layout/footer :: footer"/>
 
 <script th:inline="javascript">
