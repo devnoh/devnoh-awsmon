@@ -23,13 +23,13 @@ public class RegionTest {
     public void testRegions() {
         List<Region> regions = RegionUtils.getRegions();
         logger.debug("regions.size=" + regions.size());
-        regions.forEach(r -> logger.debug("{}, {}, {}", r.getName(), r.getDomain(), r.getPartition()));
+        //regions.forEach(r -> logger.debug("{}, {}, {}", r.getName(), r.getDomain(), r.getPartition()));
 
         regions = regions.stream()
                 .filter(r -> "aws".equals(r.getPartition()))
                 .collect(Collectors.toList());
         logger.debug("regions.size=" + regions.size());
-        regions.forEach(r -> logger.debug("{}, {}, {}", r.getName(), r.getDomain(), r.getPartition()));
+        //regions.forEach(r -> logger.debug("{}, {}, {}", r.getName(), r.getDomain(), r.getPartition()));
 
         for (Regions region : Regions.values()) {
             logger.debug(region.getName());

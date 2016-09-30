@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8"/>
     <title>AWS Monitor</title>
-    <link rel="stylesheet" th:href="@{css/style.css}"/>
-    <link rel="stylesheet" th:href="@{css/tablesorter.css}"/>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/tablesorter.css}"/>
     <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
     <script type="text/javascript" th:src="@{/js/jquery.tablesorter.js}"></script>
 </head>
@@ -28,9 +28,8 @@
         <table id="tableList" class="tablesorter">
             <thead>
             <tr>
-                <!--<th style="text-align: center; width: 4%;">No</th>-->
+                <!--#<th style="text-align: center; width: 4%;">No</th>#-->
                 <th>Name</th>
-                <th>Role</th>
                 <th>Instance ID</th>
                 <th>Type</th>
                 <th>State</th>
@@ -40,21 +39,41 @@
                 <th>Security Groups</th>
                 <th>Launch Time</th>
                 <th>Uptime</th>
+                <!--<th>Tags</th>-->
             </tr>
             </thead>
             <tbody>
-            <tr th:each="ec2Info : ${ec2List}" th:id="'tr' + ${ec2Info.instanceId}">
+            <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instance.instanceId}">
+                <!--#<td th:text="${rowStat.index}"></td>#-->
                 <td th:text="${ec2Info.name}" style="font-weight: bold;"></td>
-                <td th:text="${ec2Info.role}">${ec2Info.role}</td>
-                <td th:text="${ec2Info.instanceId}" style="white-space: nowrap"></td>
-                <td th:text="${ec2Info.instanceType}"></td>
-                <td th:text="${ec2Info.platform}"></td>
-                <td th:text="${ec2Info.privateIp}"></td>
-                <td th:text="${ec2Info.publicIp}">}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td th:text="${ec2Info.instance.instanceId}" style="white-space: nowrap"></td>
+                <td th:text="${ec2Info.instance.instanceType}"></td>
+                <td th:switch="${ec2Info.instance.state.name}" style="white-space: nowrap;">
+                    <span style="float: left; margin-right: 5px;">
+                        <img th:case="'running'" th:src="@{/images/status_green.png}" width="16" height="16"/>
+                        <img th:case="'stopped'" th:src="@{/images/status_red.png}" width="16" height="16"/>
+                        <img th:case="'terminated'" th:src="@{/images/status_red.png}" width="16" height="16"/>
+                        <img th:case="'*'" th:src="@{/images/status_orange.png}" width="16" height="16"/>
+                    </span>
+                    <span th:text="${ec2Info.instance.state.name}"/>
+                    <span style="float: right; text-align: right" sec:authorize="hasRole('ADMIN')">
+                        <a th:if="${ec2Info.instance.state.name eq 'running'}" href="#"><img class="img_running"
+                                                                                             th:src="@{/images/icon_stop_g.png}"
+                                                                                             width="16" height="16"
+                                                                                             title="Stop Server"/></a>
+                        <a th:if="${ec2Info.instance.state.name eq 'stopped'}" href="#"><img class="img_stopped"
+                                                                                             th:src="@{/images/icon_start_g.png}"
+                                                                                             width="16" height="16"
+                                                                                             title="Start Server"/></a>
+                    </span>
+                </td>
+                <td th:text="${ec2Info.instance.platform}"></td>
+                <td th:text="${ec2Info.instance.privateIpAddress}"></td>
+                <td th:text="${ec2Info.instance.publicIpAddress}"></td>
+                <td th:text="${#strings.listJoin(ec2Info.securityGroups, ', ')}"></td>
+                <td th:text="${#dates.format(new java.util.Date(ec2Info.instance.launchTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${ec2Info.instance.state.code == 16 ? ec2Info.uptimeInDays + ' days' : '-'}"></td>
+                <!--<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>-->
             </tr>
             </tbody>
         </table>
@@ -65,6 +84,18 @@
 
 <script>
     $('#tableList').tablesorter();
+    $('.img_running').mouseout(function () {
+        this.src = '/images/icon_stop_g.png';
+    });
+    $('.img_running').mouseover(function () {
+        this.src = '/images/icon_stop.png';
+    });
+    $('.img_stopped').mouseout(function () {
+        this.src = '/images/icon_start_g.png';
+    });
+    $('.img_stopped').mouseover(function () {
+        this.src = '/images/icon_start.png';
+    });
 </script>
 </body>
 </html>
