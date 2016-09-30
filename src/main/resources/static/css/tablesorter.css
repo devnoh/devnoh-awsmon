@@ -30,7 +30,7 @@
 .tablesorter tbody td,
 .tablesorter tfoot th,
 .tablesorter tfoot td {
-	padding: 6px;
+	padding: 4px;
 	vertical-align: middle;
 }
 .tablesorter .header,

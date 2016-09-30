@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/tablesorter.css}"/>
     <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
     <script type="text/javascript" th:src="@{/js/jquery.tablesorter.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.cookie.js}"></script>
 </head>
 <body>
 <div th:replace="layout/header :: header"/>
@@ -18,9 +19,9 @@
         <h1>Elastic Compute Cloud (EC2)</h1>
 
         <div style="text-align: right; margin-top: -30px;">
-            <form action="@{/ec2}" method="get">
-                <select id="region" code="region" onchange="document.forms[0].submit();">
-                    <option value="">-- region --</option>
+            <form id="regionForm" th:action="@{/ec2}" method="get">
+                <select id="region" name="region" onchange="selectRegion();">
+                    <!--#<option value="">- region -</option>#-->
                 </select>
             </form>
         </div>
@@ -82,8 +83,9 @@
 </div>
 <div th:replace="layout/footer :: footer"/>
 
-<script>
+<script th:inline="javascript">
     $('#tableList').tablesorter();
+
     $('.img_running').mouseout(function () {
         this.src = '/images/icon_stop_g.png';
     });
@@ -96,6 +98,28 @@
     $('.img_stopped').mouseover(function () {
         this.src = '/images/icon_start.png';
     });
+
+    function selectRegion() {
+        //localStorage.setItem('region', $('#region').val());
+        $.cookie('region', $('#region').val());
+        $('#tableList').fadeOut();
+        $('#regionForm').submit();
+    }
+
+    function loadRegions() {
+        $.get('/region/api/list', function (data, status) {
+            $.each(data, function () {
+                $('#region').append('<option value="' + this['code'] + '">' + this['name'] + '</option>');
+            })
+            //var region = localStorage.getItem('region');
+            var region = $.cookie('region');
+            if (!region) region = 'us-west-2';
+            console.log('region=' + region);
+            $.cookie('region', region);
+            $('#region').val(region);
+        });
+    }
+    loadRegions();
 </script>
 </body>
 </html>

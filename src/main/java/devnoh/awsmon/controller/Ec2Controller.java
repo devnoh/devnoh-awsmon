@@ -13,28 +13,25 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.*;
-import devnoh.awsmon.model.Ec2Instance;
+import devnoh.awsmon.AwsRegions;
 import devnoh.awsmon.model.Ec2Vo;
-import devnoh.awsmon.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Class description goes here.
- *
- * @author Sehwan Noh (devnoh@gmail.com)
- * @version 1.0
+ * Created by devnoh on 9/16/16.
  */
 @Controller
 @RequestMapping("/ec2")
@@ -52,8 +49,12 @@ public class Ec2Controller {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String list(Model model, HttpServletRequest request) {
-        String region = ServletRequestUtils.getStringParameter(request, "region", "us-west-1");
+    public String list(@CookieValue(value = "region", defaultValue = "") String region,
+                       Model model, HttpServletRequest request, HttpServletResponse response) {
+        if (StringUtils.isEmpty(region)) {
+            region = AwsRegions.DEFAULT_REGION.getCode();
+            response.addCookie(new Cookie("region", region));
+        }
         logger.debug("region=" + region);
 
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
@@ -63,20 +64,11 @@ public class Ec2Controller {
         List<Reservation> reservations = describeInstancesResult.getReservations();
         List<Ec2Vo> ec2List = convertToEc2VoList(reservations);
 
-		/*
-        0  : pending
-		16 : running
-		32 : shutting-down
-		48 : terminated
-		64 : stopping
-		80 : stopped
-		*/
         long runningCount = ec2List.stream().filter(i -> i.getInstance().getState().getCode() == 16).count(); // running
 
         model.addAttribute("ec2List", ec2List);
         model.addAttribute("runningCount", runningCount);
         model.addAttribute("updated", new Date());
-        model.addAttribute("region", region);
         return "ec2";
     }
 
