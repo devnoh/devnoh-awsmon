@@ -17,7 +17,7 @@ import devnoh.awsmon.AwsRegions;
 import devnoh.awsmon.model.Ec2Vo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -39,12 +39,12 @@ public class Ec2Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(Ec2Controller.class);
 
-    private static AmazonEC2 ec2 = null;
+    private static AmazonEC2 ec2Client = null;
 
     public Ec2Controller() {
-        if (ec2 == null) {
+        if (ec2Client == null) {
             AWSCredentialsProvider credentialsProvider = new ClasspathPropertiesFileCredentialsProvider();
-            ec2 = new AmazonEC2Client(credentialsProvider);
+            ec2Client = new AmazonEC2Client(credentialsProvider);
         }
     }
 
@@ -58,9 +58,9 @@ public class Ec2Controller {
         logger.debug("region=" + region);
 
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2.setEndpoint(endpoint);
+        ec2Client.setEndpoint(endpoint);
 
-        DescribeInstancesResult describeInstancesResult = ec2.describeInstances();
+        DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
         List<Reservation> reservations = describeInstancesResult.getReservations();
         List<Ec2Vo> ec2List = convertToEc2VoList(reservations);
 
@@ -95,7 +95,7 @@ public class Ec2Controller {
     @RequestMapping("/api/reservations")
     @ResponseBody
     public List<Reservation> getEc2ReservationList() {
-        DescribeInstancesResult describeInstancesResult = ec2.describeInstances();
+        DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
         return describeInstancesResult.getReservations();
     }
 
@@ -106,9 +106,9 @@ public class Ec2Controller {
         logger.debug("region=" + region);
 
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2.setEndpoint(endpoint);
+        ec2Client.setEndpoint(endpoint);
 
-        DescribeInstancesResult describeInstancesResult = ec2.describeInstances();
+        DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
         List<Reservation> reservations = describeInstancesResult.getReservations();
         List<Instance> instances = new ArrayList<Instance>();
         for (Reservation reservation : reservations) {
@@ -125,11 +125,103 @@ public class Ec2Controller {
         logger.debug("region=" + region);
 
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2.setEndpoint(endpoint);
+        ec2Client.setEndpoint(endpoint);
 
-        DescribeInstancesResult describeInstancesResult = ec2.describeInstances();
+        DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
         List<Reservation> reservations = describeInstancesResult.getReservations();
         return convertToEc2VoList(reservations);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/api/start", method = RequestMethod.GET)
+    @ResponseBody
+    public void startEc2Instance(@RequestParam String region, @RequestParam String instanceId) {
+        logger.debug("region=" + region);
+        logger.debug("instanceId=" + instanceId);
+        startEc2Instances(region, instanceId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/api/stop", method = RequestMethod.GET)
+    @ResponseBody
+    public void stopEc2Instance(@RequestParam String region, @RequestParam String instanceId) {
+        stopEc2Instances(region, instanceId);
+    }
+
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/api/start2", method = RequestMethod.POST)
+    @ResponseBody
+    public void startEc2Instance(@RequestBody Map<String, String> instance) {
+        logger.debug("instance={}", instance);
+        startEc2Instances(instance.get("region"), instance.get("instanceId"));
+    }
+
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/api/stop2", method = RequestMethod.POST)
+    @ResponseBody
+    public void stopEc2Instance(@RequestBody Map<String, String> instance) {
+        logger.debug("instance={}", instance);
+        stopEc2Instances(instance.get("region"), instance.get("instanceId"));
+    }
+
+    public void startEc2Instances(String region, String... instanceIds) {
+        logger.debug("startEc2Instances()...");
+        logger.debug("region={}, intanceIds={}", region, instanceIds);
+        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
+        ec2Client.setEndpoint(endpoint);
+
+        StartInstancesRequest startRequest = new StartInstancesRequest().withInstanceIds(instanceIds);
+        StartInstancesResult startResult = ec2Client.startInstances(startRequest);
+
+        startResult.getStartingInstances().stream().forEach(s -> logger.debug("{}: {} -> {}",
+                s.getInstanceId(), s.getPreviousState().getName(), s.getCurrentState().getName()));
+    }
+
+    public void stopEc2Instances(String region, String... instanceIds) {
+        logger.debug("stopEc2Instances()...");
+        logger.debug("region={}, intanceIds={}", region, instanceIds);
+        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
+        ec2Client.setEndpoint(endpoint);
+
+        StopInstancesRequest stopRequest = new StopInstancesRequest().withInstanceIds(instanceIds);
+        StopInstancesResult stopResult = ec2Client.stopInstances(stopRequest);
+
+        stopResult.getStoppingInstances().stream().forEach(s -> logger.debug("{}: {} -> {}",
+                s.getInstanceId(), s.getPreviousState().getName(), s.getCurrentState().getName()));
+    }
+
+    /*
+    public void rebootEc2Instances(String region, String... instanceIds) {
+        logger.debug("rebootEc2Instances()...");
+        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
+        ec2Client.setEndpoint(endpoint);
+
+        RebootInstancesRequest rebootRequest = new RebootInstancesRequest().withInstanceIds(instanceIds);
+        ec2Client.rebootInstances(rebootRequest);
+    }
+    */
+
+    /*
+    class InstanceVo {
+
+        private String region;
+        private String instanceId;
+
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
+        public String getInstanceId() {
+            return instanceId;
+        }
+
+        public void setInstanceId(String instanceId) {
+            this.instanceId = instanceId;
+        }
+    }
+    */
 }

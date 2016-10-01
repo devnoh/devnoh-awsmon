@@ -39,5 +39,4 @@ public class RegionTest {
             logger.debug("[{}] {}", region.getCode(), region.getName());
         }
     }
-
 }

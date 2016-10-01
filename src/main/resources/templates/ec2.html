@@ -40,11 +40,12 @@
                 <th>Security Groups</th>
                 <th>Launch Time</th>
                 <th>Uptime</th>
-                <!--<th>Tags</th>-->
+                <!--#<th>Tags</th>#-->
             </tr>
             </thead>
             <tbody>
-            <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instance.instanceId}">
+            <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instance.instanceId}"
+                th:title="${#strings.listJoin(ec2Info.tags, ', ')}">
                 <!--#<td th:text="${rowStat.index}"></td>#-->
                 <td th:text="${ec2Info.name}" style="font-weight: bold;"></td>
                 <td th:text="${ec2Info.instance.instanceId}" style="white-space: nowrap"></td>
@@ -54,18 +55,18 @@
                         <img th:case="'running'" th:src="@{/images/status_green.png}" width="16" height="16"/>
                         <img th:case="'stopped'" th:src="@{/images/status_red.png}" width="16" height="16"/>
                         <img th:case="'terminated'" th:src="@{/images/status_red.png}" width="16" height="16"/>
-                        <img th:case="'*'" th:src="@{/images/status_orange.png}" width="16" height="16"/>
+                        <img th:case="*" th:src="@{/images/status_orange.png}" width="16" height="16"/>
                     </span>
                     <span th:text="${ec2Info.instance.state.name}"/>
                     <span style="float: right; text-align: right" sec:authorize="hasRole('ADMIN')">
-                        <a th:if="${ec2Info.instance.state.name eq 'running'}" href="#"><img class="img_running"
-                                                                                             th:src="@{/images/icon_stop_g.png}"
-                                                                                             width="16" height="16"
-                                                                                             title="Stop Server"/></a>
-                        <a th:if="${ec2Info.instance.state.name eq 'stopped'}" href="#"><img class="img_stopped"
-                                                                                             th:src="@{/images/icon_start_g.png}"
-                                                                                             width="16" height="16"
-                                                                                             title="Start Server"/></a>
+                        <a th:if="${ec2Info.instance.state.name eq 'running'}" href="#"
+                           th:onclick="'stopServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
+                            <img class="img_running" th:src="@{/images/icon_stop_g.png}" width="16" height="16"
+                                 title="Stop Server"/></a>
+                        <a th:if="${ec2Info.instance.state.name eq 'stopped'}" href="#"
+                           th:onclick="'startServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
+                            <img class="img_stopped" th:src="@{/images/icon_start_g.png}" width="16" height="16"
+                                 title="Start Server"/></a>
                     </span>
                 </td>
                 <td th:text="${ec2Info.instance.platform}"></td>
@@ -74,7 +75,7 @@
                 <td th:text="${#strings.listJoin(ec2Info.securityGroups, ', ')}"></td>
                 <td th:text="${#dates.format(new java.util.Date(ec2Info.instance.launchTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td th:text="${ec2Info.instance.state.code == 16 ? ec2Info.uptimeInDays + ' days' : '-'}"></td>
-                <!--<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>-->
+                <!--#<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>#-->
             </tr>
             </tbody>
         </table>
@@ -129,6 +130,24 @@
         });
     }
     loadRegions();
+</script>
+<script sec:authorize="isAuthenticated() or hasRole('ADMIN')">
+    function startServer(id, name) {
+        if (confirm('Are you sure to start the server [' + name + ']?')) {
+            var region = $.cookie('region');
+            $.get('/ec2/api/start', {region: region, instanceId: id}, function (data, status) {
+                location.reload();
+            });
+        }
+    }
+    function stopServer(id, name) {
+        if (confirm('Are you sure to stop the server [' + name + ']?')) {
+            var region = $.cookie('region');
+            $.get('/ec2/api/stop', {region: region, instanceId: id}, function (data, status) {
+                location.reload();
+            });
+        }
+    }
 </script>
 </body>
 </html>
