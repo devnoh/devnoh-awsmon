@@ -61,7 +61,7 @@
                             <img th:case="*" th:src="@{/images/status_orange.png}" width="16" height="16"/>
                         </span>
                         <span th:text="${ec2Info.instance.state.name}"/>
-                        <span style="float: right; text-align: right" sec:authorize="hasRole('USER')">
+                        <span style="float: right; text-align: right" sec:authorize="hasRole('ADMIN')">
                         <a th:if="${ec2Info.instance.state.name eq 'running'}" href="#"
                            th:onclick="'stopServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
                             <img class="img_running" th:src="@{/images/icon_stop_g.png}" width="16" height="16"
