@@ -61,7 +61,7 @@
                             <img th:case="*" th:src="@{/images/status_orange.png}" width="16" height="16"/>
                         </span>
                         <span th:text="${ec2Info.instance.state.name}"/>
-                        <span style="float: right; text-align: right" sec:authorize="hasRole('ADMIN')">
+                        <span style="float: right; text-align: right" sec:authorize="hasRole('USER')">
                         <a th:if="${ec2Info.instance.state.name eq 'running'}" href="#"
                            th:onclick="'stopServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
                             <img class="img_running" th:src="@{/images/icon_stop_g.png}" width="16" height="16"
@@ -155,7 +155,7 @@
 #-->
 <script sec:authorize="isAuthenticated() or hasRole('ADMIN')">
     function startServer(id, name) {
-        if (confirm('Are you sure to start the server [' + name + ']?')) {
+        if (confirm('Are you sure to start the server: [' + id + '] ' + name + '?')) {
             var region = $.cookie('region');
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
@@ -169,12 +169,15 @@
                 },
                 success: function (data) {
                     location.reload();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
                 }
             });
         }
     }
     function stopServer(id, name) {
-        if (confirm('Are you sure to stop the server [' + name + ']?')) {
+        if (confirm('Are you sure to stop the server: [' + id + '] ' + name + '?')) {
             var region = $.cookie('region');
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
@@ -188,6 +191,9 @@
                 },
                 success: function (data) {
                     location.reload();
+                },
+                error: function(xhr) {
+                    alert(xhr.responseText);
                 }
             });
         }

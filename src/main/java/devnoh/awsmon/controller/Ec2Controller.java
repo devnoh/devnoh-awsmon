@@ -166,7 +166,7 @@ public class Ec2Controller {
         stopEc2Instances(instance.get("region"), instance.get("instanceId"));
     }
 
-    public void startEc2Instances(String region, String... instanceIds) {
+    private void startEc2Instances(String region, String... instanceIds) {
         logger.debug("startEc2Instances()...");
         logger.debug("region={}, intanceIds={}", region, instanceIds);
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
@@ -179,7 +179,7 @@ public class Ec2Controller {
                 s.getInstanceId(), s.getPreviousState().getName(), s.getCurrentState().getName()));
     }
 
-    public void stopEc2Instances(String region, String... instanceIds) {
+    private void stopEc2Instances(String region, String... instanceIds) {
         logger.debug("stopEc2Instances()...");
         logger.debug("region={}, intanceIds={}", region, instanceIds);
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
@@ -192,7 +192,7 @@ public class Ec2Controller {
                 s.getInstanceId(), s.getPreviousState().getName(), s.getCurrentState().getName()));
     }
 
-    public void rebootEc2Instances(String region, String... instanceIds) {
+    private void rebootEc2Instances(String region, String... instanceIds) {
         logger.debug("rebootEc2Instances()...");
         logger.debug("region={}, intanceIds={}", region, instanceIds);
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
