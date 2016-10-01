@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>AWS Monitor</title>
     <link rel="stylesheet" th:href="@{/css/style.css}"/>
     <link rel="stylesheet" th:href="@{/css/tablesorter.css}"/>
@@ -26,39 +28,40 @@
             </form>
         </div>
 
-        <table id="tableList" class="tablesorter">
-            <thead>
-            <tr>
-                <!--#<th style="text-align: center; width: 4%;">No</th>#-->
-                <th>Name</th>
-                <th>Instance ID</th>
-                <th>Type</th>
-                <th>State</th>
-                <th>Platform</th>
-                <th>Private IP</th>
-                <th>Public IP</th>
-                <th>Security Groups</th>
-                <th>Launch Time</th>
-                <th>Uptime</th>
-                <!--#<th>Tags</th>#-->
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instance.instanceId}"
-                th:title="${#strings.listJoin(ec2Info.tags, ', ')}">
-                <!--#<td th:text="${rowStat.index}"></td>#-->
-                <td th:text="${ec2Info.name}" style="font-weight: bold;"></td>
-                <td th:text="${ec2Info.instance.instanceId}" style="white-space: nowrap"></td>
-                <td th:text="${ec2Info.instance.instanceType}"></td>
-                <td th:switch="${ec2Info.instance.state.name}" style="white-space: nowrap;">
-                    <span style="float: left; margin-right: 5px;">
-                        <img th:case="'running'" th:src="@{/images/status_green.png}" width="16" height="16"/>
-                        <img th:case="'stopped'" th:src="@{/images/status_red.png}" width="16" height="16"/>
-                        <img th:case="'terminated'" th:src="@{/images/status_red.png}" width="16" height="16"/>
-                        <img th:case="*" th:src="@{/images/status_orange.png}" width="16" height="16"/>
-                    </span>
-                    <span th:text="${ec2Info.instance.state.name}"/>
-                    <span style="float: right; text-align: right" sec:authorize="hasRole('ADMIN')">
+        <div id="dataList">
+            <table id="tableList" class="tablesorter">
+                <thead>
+                <tr>
+                    <!--#<th style="text-align: center; width: 4%;">No</th>#-->
+                    <th>Name</th>
+                    <th>Instance ID</th>
+                    <th>Type</th>
+                    <th>State</th>
+                    <th>Platform</th>
+                    <th>Private IP</th>
+                    <th>Public IP</th>
+                    <th>Security Groups</th>
+                    <th>Launch Time</th>
+                    <th>Uptime</th>
+                    <!--#<th>Tags</th>#-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instance.instanceId}"
+                    th:title="${#strings.listJoin(ec2Info.tags, ', ')}">
+                    <!--#<td th:text="${rowStat.index}"></td>#-->
+                    <td th:text="${ec2Info.name}" style="font-weight: bold;"></td>
+                    <td th:text="${ec2Info.instance.instanceId}" style="white-space: nowrap"></td>
+                    <td th:text="${ec2Info.instance.instanceType}"></td>
+                    <td th:switch="${ec2Info.instance.state.name}" style="white-space: nowrap;">
+                        <span style="float: left; margin-right: 5px;">
+                            <img th:case="'running'" th:src="@{/images/status_green.png}" width="16" height="16"/>
+                            <img th:case="'stopped'" th:src="@{/images/status_red.png}" width="16" height="16"/>
+                            <img th:case="'terminated'" th:src="@{/images/status_red.png}" width="16" height="16"/>
+                            <img th:case="*" th:src="@{/images/status_orange.png}" width="16" height="16"/>
+                        </span>
+                        <span th:text="${ec2Info.instance.state.name}"/>
+                        <span style="float: right; text-align: right" sec:authorize="hasRole('ADMIN')">
                         <a th:if="${ec2Info.instance.state.name eq 'running'}" href="#"
                            th:onclick="'stopServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
                             <img class="img_running" th:src="@{/images/icon_stop_g.png}" width="16" height="16"
@@ -67,25 +70,25 @@
                            th:onclick="'startServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
                             <img class="img_stopped" th:src="@{/images/icon_start_g.png}" width="16" height="16"
                                  title="Start Server"/></a>
-                    </span>
-                </td>
-                <td th:text="${ec2Info.instance.platform}"></td>
-                <td th:text="${ec2Info.instance.privateIpAddress}"></td>
-                <td th:text="${ec2Info.instance.publicIpAddress}"></td>
-                <td th:text="${#strings.listJoin(ec2Info.securityGroups, ', ')}"></td>
-                <td th:text="${#dates.format(new java.util.Date(ec2Info.instance.launchTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
-                <td th:text="${ec2Info.instance.state.code == 16 ? ec2Info.uptimeInDays + ' days' : '-'}"></td>
-                <!--#<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>#-->
-            </tr>
-            </tbody>
-        </table>
+                        </span>
+                    </td>
+                    <td th:text="${ec2Info.instance.platform}"></td>
+                    <td th:text="${ec2Info.instance.privateIpAddress}"></td>
+                    <td th:text="${ec2Info.instance.publicIpAddress}"></td>
+                    <td th:text="${#strings.listJoin(ec2Info.securityGroups, ', ')}"></td>
+                    <td th:text="${#dates.format(new java.util.Date(ec2Info.instance.launchTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${ec2Info.instance.state.code == 16 ? ec2Info.uptimeInDays + ' days' : '-'}"></td>
+                    <!--#<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>#-->
+                </tr>
+                </tbody>
+            </table>
 
-        <div style="float: right; text-align: right; font-size: 9px; color: #666;">
-            Updated:
-            <span th:text="${#dates.format(updated, 'yyyy-MM-dd HH:mm:ss')}"></span>
-        </div>
-        <div th:inline="text">
-            [[${runningCount}]] of [[${ec2List.size()}]] instances are running.
+            <div style="float: right; text-align: right; font-size: 9px; color: #666;">
+                Updated: <span th:text="${#dates.format(updated, 'yyyy-MM-dd HH:mm:ss')}"></span>
+            </div>
+            <div th:inline="text">
+                [[${runningCount}]] of [[${ec2List.size()}]] instances are running.
+            </div>
         </div>
 
     </div>
@@ -110,9 +113,9 @@
     });
 
     function selectRegion() {
-        //localStorage.setItem('region', $('#region').val());
         $.cookie('region', $('#region').val());
-        $('#tableList').fadeOut();
+        $('#dataList').hide();
+        $('#dataList').after('<div style="text-align: center; padding: 20px;"><img src="/images/loading.gif"/></div>');
         $('#regionForm').submit();
     }
 
@@ -121,7 +124,6 @@
             $.each(data, function () {
                 $('#region').append('<option value="' + this['code'] + '">' + this['name'] + '</option>');
             })
-            //var region = localStorage.getItem('region');
             var region = $.cookie('region');
             if (!region) region = 'us-west-2';
             console.log('region=' + region);
@@ -131,6 +133,7 @@
     }
     loadRegions();
 </script>
+<!--#
 <script sec:authorize="isAuthenticated() or hasRole('ADMIN')">
     function startServer(id, name) {
         if (confirm('Are you sure to start the server [' + name + ']?')) {
@@ -149,5 +152,47 @@
         }
     }
 </script>
+#-->
+<script sec:authorize="isAuthenticated() or hasRole('ADMIN')">
+    function startServer(id, name) {
+        if (confirm('Are you sure to start the server [' + name + ']?')) {
+            var region = $.cookie('region');
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $.ajax({
+                type: 'POST',
+                url: '/ec2/api/start',
+                data: JSON.stringify({region: region, instanceId: id}),
+                contentType: 'application/json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }
+    }
+    function stopServer(id, name) {
+        if (confirm('Are you sure to stop the server [' + name + ']?')) {
+            var region = $.cookie('region');
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $.ajax({
+                type: 'POST',
+                url: '/ec2/api/stop',
+                data: JSON.stringify({region: region, instanceId: id}),
+                contentType: 'application/json',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }
+    }
+</script>
+
 </body>
 </html>

@@ -132,6 +132,7 @@ public class Ec2Controller {
         return convertToEc2VoList(reservations);
     }
 
+    /*
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/api/start", method = RequestMethod.GET)
     @ResponseBody
@@ -147,17 +148,18 @@ public class Ec2Controller {
     public void stopEc2Instance(@RequestParam String region, @RequestParam String instanceId) {
         stopEc2Instances(region, instanceId);
     }
+    */
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/api/start2", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/api/start", method = RequestMethod.POST)
     @ResponseBody
     public void startEc2Instance(@RequestBody Map<String, String> instance) {
         logger.debug("instance={}", instance);
         startEc2Instances(instance.get("region"), instance.get("instanceId"));
     }
 
-    //@PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/api/stop2", method = RequestMethod.POST)
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/api/stop", method = RequestMethod.POST)
     @ResponseBody
     public void stopEc2Instance(@RequestBody Map<String, String> instance) {
         logger.debug("instance={}", instance);
@@ -190,38 +192,13 @@ public class Ec2Controller {
                 s.getInstanceId(), s.getPreviousState().getName(), s.getCurrentState().getName()));
     }
 
-    /*
     public void rebootEc2Instances(String region, String... instanceIds) {
         logger.debug("rebootEc2Instances()...");
+        logger.debug("region={}, intanceIds={}", region, instanceIds);
         String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
         ec2Client.setEndpoint(endpoint);
 
         RebootInstancesRequest rebootRequest = new RebootInstancesRequest().withInstanceIds(instanceIds);
         ec2Client.rebootInstances(rebootRequest);
     }
-    */
-
-    /*
-    class InstanceVo {
-
-        private String region;
-        private String instanceId;
-
-        public String getRegion() {
-            return region;
-        }
-
-        public void setRegion(String region) {
-            this.region = region;
-        }
-
-        public String getInstanceId() {
-            return instanceId;
-        }
-
-        public void setInstanceId(String instanceId) {
-            this.instanceId = instanceId;
-        }
-    }
-    */
 }
