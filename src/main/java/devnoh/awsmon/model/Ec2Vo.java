@@ -34,7 +34,10 @@ public class Ec2Vo {
     }
 
     public String getName() {
-        return instance.getTags().stream().filter(t -> t.getKey().equals("Name")).findFirst().map(t -> t.getValue()).orElse("");
+        return instance.getTags().stream()
+                .filter(t -> t.getKey().equals("Name"))
+                .findFirst().map(t -> t.getValue())
+                .orElse("");
         /*
         if (instance != null) {
             for (Tag tag : instance.getTags()) {
