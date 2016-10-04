@@ -6,6 +6,7 @@ import com.amazonaws.services.ec2.model.Tag;
 import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +34,8 @@ public class Ec2Vo {
     }
 
     public String getName() {
+        return instance.getTags().stream().filter(t -> t.getKey().equals("Name")).findFirst().map(t -> t.getValue()).orElse("");
+        /*
         if (instance != null) {
             for (Tag tag : instance.getTags()) {
                 if (tag.getKey().equals("Name")) {
@@ -41,6 +44,7 @@ public class Ec2Vo {
             }
         }
         return "";
+        */
     }
 
     public List<String> getTags() {
