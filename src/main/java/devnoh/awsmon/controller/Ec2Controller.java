@@ -91,33 +91,6 @@ public class Ec2Controller {
         return ec2List;
     }
 
-    /*
-    @RequestMapping("/api/reservations")
-    @ResponseBody
-    public List<Reservation> getEc2ReservationList() {
-        DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
-        return describeInstancesResult.getReservations();
-    }
-
-    @RequestMapping("/api/instances")
-    @ResponseBody
-    public List<Instance> getEc2InstanceList(HttpServletRequest request) {
-        String region = ServletRequestUtils.getStringParameter(request, "region", "us-west-1");
-        logger.debug("region=" + region);
-
-        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2Client.setEndpoint(endpoint);
-
-        DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
-        List<Reservation> reservations = describeInstancesResult.getReservations();
-        List<Instance> instances = new ArrayList<Instance>();
-        for (Reservation reservation : reservations) {
-            instances.addAll(reservation.getInstances());
-        }
-        return instances;
-    }
-    */
-
     @RequestMapping("/api/list")
     @ResponseBody
     public List<Ec2Vo> getEc2List(HttpServletRequest request) {
@@ -131,24 +104,6 @@ public class Ec2Controller {
         List<Reservation> reservations = describeInstancesResult.getReservations();
         return convertToEc2VoList(reservations);
     }
-
-    /*
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/api/start", method = RequestMethod.GET)
-    @ResponseBody
-    public void startEc2Instance(@RequestParam String region, @RequestParam String instanceId) {
-        logger.debug("region=" + region);
-        logger.debug("instanceId=" + instanceId);
-        startEc2Instances(region, instanceId);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/api/stop", method = RequestMethod.GET)
-    @ResponseBody
-    public void stopEc2Instance(@RequestParam String region, @RequestParam String instanceId) {
-        stopEc2Instances(region, instanceId);
-    }
-    */
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(value = "/api/start", method = RequestMethod.POST)
