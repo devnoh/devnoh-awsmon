@@ -17,7 +17,7 @@ public enum AwsRegions {
     AP_SOUTH_1("ap-south-1", "Asia Pacific (Mumbai)"),
     SA_EAST_1("sa-east-1", "South America (São Paulo)");
 
-    public static final AwsRegions DEFAULT_REGION = US_WEST_2;
+    public static final String DEFAULT_REGION = "us-west-2";
 
     private final String code;
     private final String name;

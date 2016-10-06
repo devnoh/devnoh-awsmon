@@ -8,11 +8,10 @@ package devnoh.awsmon.controller;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
-import com.amazonaws.regions.*;
-import com.amazonaws.regions.Region;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.*;
+import devnoh.awsmon.AwsClients;
 import devnoh.awsmon.AwsRegions;
 import devnoh.awsmon.model.Ec2Vo;
 import org.slf4j.Logger;
@@ -20,13 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Cookie;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,26 +45,21 @@ public class Ec2Controller {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public String list(@CookieValue(value = "region", defaultValue = "") String region,
+    //public String list(@RequestParam(defaultValue = AwsRegions.DEFAULT_REGION) String region,
+    public String list(String region, // get from HandlerMethodArgumentResolver
                        Model model, HttpServletRequest request, HttpServletResponse response) {
-        if (StringUtils.isEmpty(region)) {
-            region = AwsRegions.DEFAULT_REGION.getCode();
-            response.addCookie(new Cookie("region", region));
-        }
         logger.debug("region=" + region);
-
-        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2Client.setEndpoint(endpoint);
+        ec2Client.setEndpoint(AwsClients.getEc2Endpoint(region));
 
         DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
         List<Reservation> reservations = describeInstancesResult.getReservations();
         List<Ec2Vo> ec2List = convertToEc2VoList(reservations);
-
-        long runningCount = ec2List.stream().filter(i -> i.getInstance().getState().getCode() == 16).count(); // running
+        long runningCount = ec2List.stream().filter(i -> i.getStateCode() == 16).count(); // running
 
         model.addAttribute("ec2List", ec2List);
         model.addAttribute("runningCount", runningCount);
         model.addAttribute("updated", new Date());
+        model.addAttribute("region", region);
         return "ec2";
     }
 
@@ -79,8 +70,11 @@ public class Ec2Controller {
             instances.addAll(reservation.getInstances());
         }
         */
-        List<Ec2Vo> ec2List = reservations.stream()
-                .map(r -> new Ec2Vo(r.getInstances().get(0)))
+        List<Instance> instances = new ArrayList<Instance>();
+        reservations.forEach(r -> instances.addAll(r.getInstances()));
+
+        List<Ec2Vo> ec2List = instances.stream()
+                .map(i -> convertToEc2Vo(i))
                 .sorted(new Comparator<Ec2Vo>() {
                     @Override
                     public int compare(Ec2Vo o1, Ec2Vo o2) {
@@ -91,14 +85,57 @@ public class Ec2Controller {
         return ec2List;
     }
 
+    private Ec2Vo convertToEc2Vo(Instance instance) {
+        String name = instance.getTags().stream()
+                .filter(t -> t.getKey().equals("Name"))
+                .findFirst().map(t -> t.getValue())
+                .orElse("");
+
+        List<Map.Entry> tags = instance.getTags().stream()
+                .filter(t -> !"Name".equals(t.getKey()))
+                .map(t -> new AbstractMap.SimpleEntry<String, String>(t.getKey(), t.getValue()))
+                .sorted()
+                .collect(Collectors.toList());
+
+        List<String> securityGroups = instance.getSecurityGroups().stream()
+                .map(g -> g.getGroupName())
+                .sorted()
+                .collect(Collectors.toList());
+
+        Ec2Vo ec2Vo = new Ec2Vo();
+        ec2Vo.setName(name);
+        ec2Vo.setInstanceId(instance.getInstanceId());
+        ec2Vo.setInstanceType(instance.getInstanceType());
+        ec2Vo.setStateCode(instance.getState().getCode());
+        ec2Vo.setStateName(instance.getState().getName());
+        ec2Vo.setPlatform(instance.getPlatform());
+        ec2Vo.setPrivateIp(instance.getPrivateIpAddress());
+        ec2Vo.setPublicIp(instance.getPublicIpAddress());
+        ec2Vo.setLaunchTime(instance.getLaunchTime());
+        ec2Vo.setSecurityGroups(securityGroups);
+        ec2Vo.setTags(tags);
+        return ec2Vo;
+    }
+
+    /////////////////////
+    // API
+    /////////////////////
+
+    @RequestMapping("/api/reservations")
+    @ResponseBody
+    public List<Reservation> getEc2ReservationList(@RequestParam(defaultValue = AwsRegions.DEFAULT_REGION) String region) {
+        logger.debug("region=" + region);
+        ec2Client.setEndpoint(AwsClients.getEc2Endpoint(region));
+
+        DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
+        return describeInstancesResult.getReservations();
+    }
+
     @RequestMapping("/api/list")
     @ResponseBody
-    public List<Ec2Vo> getEc2List(HttpServletRequest request) {
-        String region = ServletRequestUtils.getStringParameter(request, "region", "us-west-1");
+    public List<Ec2Vo> getEc2VoList(@RequestParam(defaultValue = AwsRegions.DEFAULT_REGION) String region) {
         logger.debug("region=" + region);
-
-        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2Client.setEndpoint(endpoint);
+        ec2Client.setEndpoint(AwsClients.getEc2Endpoint(region));
 
         DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances();
         List<Reservation> reservations = describeInstancesResult.getReservations();
@@ -124,8 +161,7 @@ public class Ec2Controller {
     private void startEc2Instances(String region, String... instanceIds) {
         logger.debug("startEc2Instances()...");
         logger.debug("region={}, intanceIds={}", region, instanceIds);
-        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2Client.setEndpoint(endpoint);
+        ec2Client.setEndpoint(AwsClients.getEc2Endpoint(region));
 
         StartInstancesRequest startRequest = new StartInstancesRequest().withInstanceIds(instanceIds);
         StartInstancesResult startResult = ec2Client.startInstances(startRequest);
@@ -137,8 +173,7 @@ public class Ec2Controller {
     private void stopEc2Instances(String region, String... instanceIds) {
         logger.debug("stopEc2Instances()...");
         logger.debug("region={}, intanceIds={}", region, instanceIds);
-        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2Client.setEndpoint(endpoint);
+        ec2Client.setEndpoint(AwsClients.getEc2Endpoint(region));
 
         StopInstancesRequest stopRequest = new StopInstancesRequest().withInstanceIds(instanceIds);
         StopInstancesResult stopResult = ec2Client.stopInstances(stopRequest);
@@ -150,8 +185,7 @@ public class Ec2Controller {
     private void rebootEc2Instances(String region, String... instanceIds) {
         logger.debug("rebootEc2Instances()...");
         logger.debug("region={}, intanceIds={}", region, instanceIds);
-        String endpoint = Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonEC2.ENDPOINT_PREFIX);
-        ec2Client.setEndpoint(endpoint);
+        ec2Client.setEndpoint(AwsClients.getEc2Endpoint(region));
 
         RebootInstancesRequest rebootRequest = new RebootInstancesRequest().withInstanceIds(instanceIds);
         ec2Client.rebootInstances(rebootRequest);

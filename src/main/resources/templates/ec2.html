@@ -47,37 +47,37 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instance.instanceId}"
+                <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instanceId}"
                     th:title="${#strings.listJoin(ec2Info.tags, ', ')}">
                     <!--#<td th:text="${rowStat.index}"></td>#-->
                     <td th:text="${ec2Info.name}" style="font-weight: bold;"></td>
-                    <td th:text="${ec2Info.instance.instanceId}" style="white-space: nowrap"></td>
-                    <td th:text="${ec2Info.instance.instanceType}"></td>
-                    <td th:switch="${ec2Info.instance.state.name}" style="white-space: nowrap;">
+                    <td th:text="${ec2Info.instanceId}" style="white-space: nowrap"></td>
+                    <td th:text="${ec2Info.instanceType}"></td>
+                    <td th:switch="${ec2Info.stateName}" style="white-space: nowrap;">
                         <span style="float: left; margin-right: 5px;">
                             <img th:case="'running'" th:src="@{/images/status_green.png}" width="16" height="16"/>
                             <img th:case="'stopped'" th:src="@{/images/status_red.png}" width="16" height="16"/>
                             <img th:case="'terminated'" th:src="@{/images/status_red.png}" width="16" height="16"/>
                             <img th:case="*" th:src="@{/images/status_orange.png}" width="16" height="16"/>
                         </span>
-                        <span th:text="${ec2Info.instance.state.name}"/>
+                        <span th:text="${ec2Info.stateName}"/>
                         <span style="float: right; text-align: right" sec:authorize="hasRole('ADMIN')">
-                        <a th:if="${ec2Info.instance.state.name eq 'running'}" href="#"
-                           th:onclick="'stopServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
+                        <a th:if="${ec2Info.stateName eq 'running'}" href="#"
+                           th:onclick="'stopServer(\'' + ${ec2Info.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
                             <img class="img_running" th:src="@{/images/icon_stop_g.png}" width="16" height="16"
                                  title="Stop Server"/></a>
-                        <a th:if="${ec2Info.instance.state.name eq 'stopped'}" href="#"
-                           th:onclick="'startServer(\'' + ${ec2Info.instance.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
+                        <a th:if="${ec2Info.stateName eq 'stopped'}" href="#"
+                           th:onclick="'startServer(\'' + ${ec2Info.instanceId} + '\',\'' + ${ec2Info.name} + '\'); return false;'">
                             <img class="img_stopped" th:src="@{/images/icon_start_g.png}" width="16" height="16"
                                  title="Start Server"/></a>
                         </span>
                     </td>
-                    <td th:text="${ec2Info.instance.platform}"></td>
-                    <td th:text="${ec2Info.instance.privateIpAddress}"></td>
-                    <td th:text="${ec2Info.instance.publicIpAddress}"></td>
+                    <td th:text="${ec2Info.platform}"></td>
+                    <td th:text="${ec2Info.privateIp}"></td>
+                    <td th:text="${ec2Info.publicIp}"></td>
                     <td th:text="${#strings.listJoin(ec2Info.securityGroups, ', ')}"></td>
-                    <td th:text="${#dates.format(new java.util.Date(ec2Info.instance.launchTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
-                    <td th:text="${ec2Info.instance.state.code == 16 ? ec2Info.uptimeInDays + ' days' : '-'}"></td>
+                    <td th:text="${#dates.format(new java.util.Date(ec2Info.launchTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${ec2Info.stateCode == 16 ? ec2Info.uptimeInDays + ' days' : '-'}"></td>
                     <!--#<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>#-->
                 </tr>
                 </tbody>
@@ -112,6 +112,8 @@
         this.src = '/images/icon_start.png';
     });
 
+    var region = /*[[${region}]]*/'';
+
     function selectRegion() {
         $.cookie('region', $('#region').val());
         $('#dataList').hide();
@@ -124,41 +126,18 @@
             $.each(data, function () {
                 $('#region').append('<option value="' + this['code'] + '">' + this['name'] + '</option>');
             })
-            var region = $.cookie('region');
-            if (!region) region = 'us-west-2';
-            console.log('region=' + region);
-            $.cookie('region', region);
             $('#region').val(region);
         });
     }
     loadRegions();
 </script>
-<!--#
-<script sec:authorize="isAuthenticated() or hasRole('ADMIN')">
-    function startServer(id, name) {
-        if (confirm('Are you sure to start the server [' + name + ']?')) {
-            var region = $.cookie('region');
-            $.get('/ec2/api/start', {region: region, instanceId: id}, function (data, status) {
-                location.reload();
-            });
-        }
-    }
-    function stopServer(id, name) {
-        if (confirm('Are you sure to stop the server [' + name + ']?')) {
-            var region = $.cookie('region');
-            $.get('/ec2/api/stop', {region: region, instanceId: id}, function (data, status) {
-                location.reload();
-            });
-        }
-    }
-</script>
-#-->
+
 <script sec:authorize="isAuthenticated() or hasRole('ADMIN')">
     function startServer(id, name) {
         if (confirm('Are you sure to start the server: [' + id + '] ' + name + '?')) {
-            var region = $.cookie('region');
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
+            var region = $('#region').val();
+            var token = $('meta[name="_csrf"]').attr('content');
+            var header = $('meta[name="_csrf_header"]').attr('content');
             $.ajax({
                 type: 'POST',
                 url: '/ec2/api/start',
@@ -178,9 +157,9 @@
     }
     function stopServer(id, name) {
         if (confirm('Are you sure to stop the server: [' + id + '] ' + name + '?')) {
-            var region = $.cookie('region');
-            var token = $("meta[name='_csrf']").attr("content");
-            var header = $("meta[name='_csrf_header']").attr("content");
+            var region = $('#region').val();
+            var token = $('meta[name="_csrf"]').attr('content');
+            var header = $('meta[name="_csrf_header"]').attr('content');
             $.ajax({
                 type: 'POST',
                 url: '/ec2/api/stop',

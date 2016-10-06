@@ -4,7 +4,7 @@
 <ul id="tabmenu" th:fragment="tabmenu">
     <li><a th:href="@{/}"  th:class="${menu eq 'home'} ? 'current' : ''">Home</a></li>
     <li><a th:href="@{/ec2}" th:class="${menu eq 'ec2'} ? 'current' : ''">EC2</a></li>
-    <li><a th:href="@{/lb}" th:class="${menu eq 'lb'} ? 'current' : ''">LB</a></li>
+    <li><a th:href="@{/elb}" th:class="${menu eq 'elb'} ? 'current' : ''">ELB</a></li>
     <li><a th:href="@{/rds}" th:class="${menu eq 'rds'} ? 'current' : ''">RDS</a></li>
     <li><a th:href="@{/s3}" th:class="${menu eq 's3'} ? 'current' : ''">S3</a></li>
     <li><a th:href="@{/route53}" th:class="${menu eq 'route53'} ? 'current' : ''">Route 53</a></li>

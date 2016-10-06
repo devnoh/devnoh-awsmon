@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <title>AWS Monitor</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/tablesorter.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.tablesorter.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.cookie.js}"></script>
+</head>
+<body>
+<div th:replace="layout/header :: header"/>
+<div id="content">
+    <div th:replace="layout/tabmenu :: tabmenu(menu='elb')"/>
+
+    <div id="tabcontent">
+
+        <h1>Elastic Load Balancing</h1>
+
+        <div style="text-align: right; margin-top: -30px;">
+            <form id="regionForm" th:action="@{/elb}" method="get">
+                <select id="region" name="region" onchange="selectRegion();">
+                    <!--#<option value="">- region -</option>#-->
+                </select>
+            </form>
+        </div>
+
+        <div id="dataList">
+            <table id="tableList" class="tablesorter">
+                <thead>
+                <tr>
+                    <!--#<th style="text-align: center; width: 4%;">No</th>#-->
+                    <th>Load Balancer Name</th>
+                    <th>DNS Name</th>
+                    <th>Scheme</th>
+                    <th>Port Configuration</th>
+                    <th>Instances</th>
+                    <th>Created Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="elbInfo,rowStat : ${elbList}">
+                    <!--#<td th:text="${rowStat.index}"></td>#-->
+                    <td th:text="${elbInfo.name}" style="font-weight: bold;"></td>
+                    <td th:text="${elbInfo.dnsName}" style="white-space: nowrap"></td>
+                    <td th:text="${elbInfo.scheme}"></td>
+                    <td th:utext="${#strings.listJoin(elbInfo.portConfigs, '&lt;br/&gt;')}"></td>
+                    <td th:utext="${#strings.listJoin(elbInfo.instanceIds, '&lt;br/&gt;')}"></td>
+                    <td th:text="${#dates.format(new java.util.Date(elbInfo.createdTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div style="float: right; text-align: right; font-size: 9px; color: #666;">
+                Updated: <span th:text="${#dates.format(updated, 'yyyy-MM-dd HH:mm:ss')}"></span>
+            </div>
+            <div th:inline="text">
+                [[${elbList.size()}]] load balancers
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="layout/footer :: footer"/>
+
+<script th:inline="javascript">
+    $('#tableList').tablesorter();
+
+    $('.img_running').mouseout(function () {
+        this.src = '/images/icon_stop_g.png';
+    });
+    $('.img_running').mouseover(function () {
+        this.src = '/images/icon_stop.png';
+    });
+    $('.img_stopped').mouseout(function () {
+        this.src = '/images/icon_start_g.png';
+    });
+    $('.img_stopped').mouseover(function () {
+        this.src = '/images/icon_start.png';
+    });
+
+    var region = /*[[${region}]]*/'';
+
+    function selectRegion() {
+        $.cookie('region', $('#region').val());
+        $('#dataList').hide();
+        $('#dataList').after('<div style="text-align: center; padding: 20px;"><img src="/images/loading.gif"/></div>');
+        $('#regionForm').submit();
+    }
+
+    function loadRegions() {
+        $.get('/region/api/list', function (data, status) {
+            $.each(data, function () {
+                $('#region').append('<option value="' + this['code'] + '">' + this['name'] + '</option>');
+            })
+            $('#region').val(region);
+        });
+    }
+    loadRegions();
+</script>
+
+</body>
+</html>

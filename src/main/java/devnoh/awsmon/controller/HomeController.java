@@ -24,6 +24,13 @@ public class HomeController {
 
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+    /*
+    @RequestMapping("/")
+    public String index() {
+        return home();
+    }
+    */
+
     @RequestMapping("/")
     public String home() {
         List<Region> regions = RegionUtils.getRegions();
