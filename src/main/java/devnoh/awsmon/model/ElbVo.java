@@ -18,7 +18,7 @@ public class ElbVo {
     private String scheme;
     private Date createdTime;
     private List<String> portConfigs;
-    private List<String> instanceIds;
+    private List<InstanceVo> instances;
 
     public String getName() {
         return name;
@@ -60,11 +60,11 @@ public class ElbVo {
         this.portConfigs = portConfigs;
     }
 
-    public List<String> getInstanceIds() {
-        return instanceIds;
+    public List<InstanceVo> getInstances() {
+        return instances;
     }
 
-    public void setInstanceIds(List<String> instanceIds) {
-        this.instanceIds = instanceIds;
+    public void setInstances(List<InstanceVo> instances) {
+        this.instances = instances;
     }
 }

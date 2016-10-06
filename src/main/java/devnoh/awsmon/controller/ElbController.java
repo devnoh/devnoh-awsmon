@@ -23,6 +23,7 @@ import devnoh.awsmon.AwsClients;
 import devnoh.awsmon.AwsRegions;
 import devnoh.awsmon.model.Ec2Vo;
 import devnoh.awsmon.model.ElbVo;
+import devnoh.awsmon.model.InstanceVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,7 +80,7 @@ public class ElbController {
                 .sorted(new Comparator<ElbVo>() {
                     @Override
                     public int compare(ElbVo o1, ElbVo o2) {
-                        return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                        return o1.getName().compareTo(o2.getName());
                     }
                 })
                 .collect(Collectors.toList());
@@ -95,9 +96,18 @@ public class ElbController {
                 .sorted()
                 .collect(Collectors.toList());
 
-        List<String> instanceIds = description.getInstances().stream()
-                .map(i -> i.getInstanceId())
-                .sorted()
+        List<InstanceVo> instances = description.getInstances().stream()
+                .map(i -> new InstanceVo(i.getInstanceId(), AwsClients.getEc2Cache().get(i.getInstanceId())))
+                .sorted(new Comparator<InstanceVo>() {
+                    @Override
+                    public int compare(InstanceVo o1, InstanceVo o2) {
+                        if (o1.getName() != null) {
+                            return o1.getName().compareTo(o2.getName());
+                        } else {
+                            return o1.getId().compareTo(o2.getId());
+                        }
+                    }
+                })
                 .collect(Collectors.toList());
 
         ElbVo elbVo = new ElbVo();
@@ -106,7 +116,7 @@ public class ElbController {
         elbVo.setScheme(description.getScheme());
         elbVo.setCreatedTime(description.getCreatedTime());
         elbVo.setPortConfigs(portConfigs);
-        elbVo.setInstanceIds(instanceIds);
+        elbVo.setInstances(instances);
         return elbVo;
     }
 

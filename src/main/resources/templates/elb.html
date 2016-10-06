@@ -46,7 +46,9 @@
                     <td th:text="${elbInfo.dnsName}" style="white-space: nowrap"></td>
                     <td th:text="${elbInfo.scheme}"></td>
                     <td th:utext="${#strings.listJoin(elbInfo.portConfigs, '&lt;br/&gt;')}"></td>
-                    <td th:utext="${#strings.listJoin(elbInfo.instanceIds, '&lt;br/&gt;')}"></td>
+                    <!--#<td th:utext="${#strings.listJoin(elbInfo.instanceIds, '&lt;br/&gt;')}"></td>#-->
+                    <!--#<td><span th:each="instance : ${elbInfo.instances}" th:inline="text">[[${instance.name}]] ([[${instance.id}]])<br/></span></td>#-->
+                    <td><span th:each="instance : ${elbInfo.instances}" th:utext="${instance.name == null ? instance.id + '&lt;br/&gt;': instance.name + ' (' + instance.id + ')&lt;br/&gt;'}"></span></td>
                     <td th:text="${#dates.format(new java.util.Date(elbInfo.createdTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
                 </tr>
                 </tbody>

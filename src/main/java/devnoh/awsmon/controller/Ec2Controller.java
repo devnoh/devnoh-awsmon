@@ -78,10 +78,12 @@ public class Ec2Controller {
                 .sorted(new Comparator<Ec2Vo>() {
                     @Override
                     public int compare(Ec2Vo o1, Ec2Vo o2) {
-                        return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                        return o1.getName().compareTo(o2.getName());
                     }
                 })
                 .collect(Collectors.toList());
+        // Store names in cache
+        ec2List.forEach(e -> AwsClients.getEc2Cache().put(e.getInstanceId(), e.getName()));
         return ec2List;
     }
 
