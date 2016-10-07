@@ -11,11 +11,24 @@
 
 ```
 
+## Solutions
+
+* Java 8
+* AWS Java SDK
+* Spring Boot
+* Spring Security
+* Spring Data (JPA)
+* Spring Web MVC
+* Spring Test
+* JUnit
+* Selenium
+* Gradle
+* Docker
+
 ## Build
 ```
 $ gradle build
 ```
-
 
 ## Run
 ```
@@ -28,10 +41,9 @@ or
 $ java -jar ./build/libs/devnoh-awsmon-0.0.1-SNAPSHOT.jar
 ```
 
-
 ## Build a Docker Image
 ```
-$ gradle build buildDocker  // $ mvn package docker:build
+$ gradle build buildDocker
 
 $ docker images
 
