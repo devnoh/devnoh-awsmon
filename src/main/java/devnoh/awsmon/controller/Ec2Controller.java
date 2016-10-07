@@ -6,10 +6,7 @@
  */
 package devnoh.awsmon.controller;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
 import com.amazonaws.services.ec2.AmazonEC2;
-import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.*;
 import devnoh.awsmon.AwsClients;
 import devnoh.awsmon.AwsRegions;
@@ -35,13 +32,10 @@ public class Ec2Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(Ec2Controller.class);
 
-    private static AmazonEC2 ec2Client = null;
+    private AmazonEC2 ec2Client = null;
 
     public Ec2Controller() {
-        if (ec2Client == null) {
-            AWSCredentialsProvider credentialsProvider = new ClasspathPropertiesFileCredentialsProvider();
-            ec2Client = new AmazonEC2Client(credentialsProvider);
-        }
+        ec2Client = AwsClients.createEc2Client();
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)

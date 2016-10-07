@@ -6,34 +6,19 @@
  */
 package devnoh.awsmon.controller;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.ec2.AmazonEC2;
-import com.amazonaws.services.ec2.AmazonEC2Client;
-import com.amazonaws.services.ec2.model.*;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing;
-import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClient;
 import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersResult;
-import com.amazonaws.services.elasticloadbalancing.model.Listener;
-import com.amazonaws.services.elasticloadbalancing.model.ListenerDescription;
 import com.amazonaws.services.elasticloadbalancing.model.LoadBalancerDescription;
 import devnoh.awsmon.AwsClients;
 import devnoh.awsmon.AwsRegions;
-import devnoh.awsmon.model.Ec2Vo;
 import devnoh.awsmon.model.ElbVo;
 import devnoh.awsmon.model.InstanceVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -51,10 +36,7 @@ public class ElbController {
     private static AmazonElasticLoadBalancing elbClient = null;
 
     public ElbController() {
-        if (elbClient == null) {
-            AWSCredentialsProvider credentialsProvider = new ClasspathPropertiesFileCredentialsProvider();
-            elbClient = new AmazonElasticLoadBalancingClient(credentialsProvider);
-        }
+        elbClient = AwsClients.createElbClient();
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
