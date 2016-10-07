@@ -15,9 +15,8 @@
 
         <h1>Welcome!</h1>
 
-        <div style="text-align: center; margin: 40px;">
-            <!--<img src="images/aws_logo_400.png"/>-->
-
+        <div style="text-align: center; margin: 50px; line-height: 80%;">
+            <!--/*<img src="images/aws_logo_400.png"/>*/-->
             <pre>
 █████╗ ██╗    ██╗███████╗    ███╗   ███╗ ██████╗ ███╗   ██╗██╗████████╗ ██████╗ ██████╗
 ██╔══██╗██║    ██║██╔════╝    ████╗ ████║██╔═══██╗████╗  ██║██║╚══██╔══╝██╔═══██╗██╔══██╗
@@ -26,10 +25,10 @@
 ██║  ██║╚███╔███╔╝███████║    ██║ ╚═╝ ██║╚██████╔╝██║ ╚████║██║   ██║   ╚██████╔╝██║  ██║
 ╚═╝  ╚═╝ ╚══╝╚══╝ ╚══════╝    ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
             </pre>
-
         </div>
 
-        <h5 th:text="'AWS_CREDENTIAL_PROFILES_FILE = ' + ${@environment.getProperty('AWS_CREDENTIAL_PROFILES_FILE')}"></h5>
+        <h5 th:if="${@environment.getProperty('AWS_CREDENTIAL_PROFILES_FILE')}"
+            th:text="'AWS_CREDENTIAL_PROFILES_FILE = ' + ${@environment.getProperty('AWS_CREDENTIAL_PROFILES_FILE')}"></h5>
 
     </div>
 </div>
