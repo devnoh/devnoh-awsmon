@@ -37,8 +37,6 @@ public class AwsClients {
     }
 
     public static AmazonEC2 createEc2Client() {
-        //return new AmazonEC2Client(new ClasspathPropertiesFileCredentialsProvider());
-        //return new AmazonEC2Client(new EnvironmentVariableCredentialsProvider());
         return new AmazonEC2Client(new ProfileCredentialsProvider());
     }
 
@@ -49,8 +47,6 @@ public class AwsClients {
     */
 
     public static AmazonElasticLoadBalancing createElbClient() {
-        //return new AmazonElasticLoadBalancingClient(new ClasspathPropertiesFileCredentialsProvider());
-        //return new AmazonElasticLoadBalancingClient(new EnvironmentVariableCredentialsProvider());
         return new AmazonElasticLoadBalancingClient(new ProfileCredentialsProvider());
     }
 

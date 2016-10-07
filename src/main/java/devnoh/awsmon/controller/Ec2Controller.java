@@ -58,12 +58,6 @@ public class Ec2Controller {
     }
 
     private List<Ec2Vo> convertToEc2VoList(List<Reservation> reservations) {
-        /*
-        List<Instance> instances = new ArrayList<Instance>();
-        for (Reservation reservation : reservations) {
-            instances.addAll(reservation.getInstances());
-        }
-        */
         List<Instance> instances = new ArrayList<Instance>();
         reservations.forEach(r -> instances.addAll(r.getInstances()));
 
