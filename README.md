@@ -20,6 +20,7 @@
 * Spring Data (JPA)
 * Spring Web MVC
 * Spring Test
+* Thymeleaf
 * JUnit
 * Selenium
 * Gradle
