@@ -1,5 +1,7 @@
 # devnoh-awsmon
 
+A simple monitoring application for Amazon EC2, Load Balancing, S3, RDS, Route 53, etc.
+
 ```
  _______  _     _  _______    __   __  _______  __    _  ___   _______  _______  ______
 |   _   || | _ | ||       |  |  |_|  ||       ||  |  | ||   | |       ||       ||    _ |
