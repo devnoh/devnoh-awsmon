@@ -50,7 +50,7 @@ $ docker images
 $ docker login
 $ docker push devnoh/awsmon
 
-$ docker tag 1939dfadde3c devnoh/awsmon:0.0.1
+$ docker tag cc9dde7af295 devnoh/awsmon:0.0.1
 $ docker push devnoh/awsmon:0.0.1
 ```
 
@@ -60,9 +60,11 @@ $ docker push devnoh/awsmon:0.0.1
 $ docker run -it --rm -p 8888:8080 -v /Users/devnoh:/path/to -e "AWS_CREDENTIAL_PROFILES_FILE=/path/to/.aws/credentials" --name myawsmon devnoh/awsmon
 ```
 
+http://localhost:8888
+
 ## References
 
-http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/aws-sdk-java-dg.pdf
+* http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/aws-sdk-java-dg.pdf
 
 ## Screenshot
 
