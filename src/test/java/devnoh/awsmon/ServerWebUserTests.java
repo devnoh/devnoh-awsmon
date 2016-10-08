@@ -4,17 +4,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,17 +23,19 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ServerWebUserTests {
 
-    private static ChromeDriver browser;
+    private static FirefoxDriver browser;
+    //private static ChromeDriver browser;
 
     @LocalServerPort
     private int port;
 
     @BeforeClass
     public static void openBrowser() {
-        //browser = new FirefoxDriver();
-        browser = new ChromeDriver();
+        browser = new FirefoxDriver();
+        //browser = new ChromeDriver();
         browser.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
+
 
     @AfterClass
     public static void closeBrowser() {

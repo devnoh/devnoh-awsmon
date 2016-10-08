@@ -1,20 +1,13 @@
 package devnoh.awsmon.controller;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -39,8 +32,15 @@ public class Ec2ControllerTest {
     @Test
     @WithMockCustomUser(username = "user", password = "user", roles = {"USER"})
     public void testAuthorized() throws Exception {
-        mockMvc.perform(get("/ec2"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("ec2"));
+        try {
+            mockMvc.perform(get("/ec2"))
+                    .andExpect(status().isOk())
+                    .andExpect(view().name("ec2"));
+        } catch (Exception e) {
+            // if no aws credentials file is provided
+            System.out.println(e.getMessage());
+            assertTrue(e.getCause() instanceof IllegalArgumentException);
+            assertTrue(e.getCause().getMessage().equals("profile file cannot be null"));
+        }
     }
 }
