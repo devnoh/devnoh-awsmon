@@ -63,7 +63,7 @@ $ docker push devnoh/awsmon:0.0.1
 $ docker run -it --rm -p 8888:8080 -v /Users/devnoh:/path/to -e "AWS_CREDENTIAL_PROFILES_FILE=/path/to/.aws/credentials" --name myawsmon devnoh/awsmon
 ```
 
-http://localhost:8888
+Access localhost: http://localhost:8888
 
 ## References
 
