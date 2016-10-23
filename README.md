@@ -36,12 +36,11 @@ $ gradle build
 ## Run
 ```
 $ export AWS_CREDENTIAL_PROFILES_FILE=/path/to/aws/credentials
-
 $ gradle bootRun
 
 or
 
-$ java -jar ./build/libs/devnoh-awsmon-0.0.1-SNAPSHOT.jar
+$ java -jar -DAWS_CREDENTIAL_PROFILES_FILE=/path/to/aws/credentials ./build/libs/devnoh-awsmon-0.0.1-SNAPSHOT.jar
 ```
 
 ## Build a Docker Image
