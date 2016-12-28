@@ -1,9 +1,3 @@
-/*
- * @(#)Ec2Controller.java
- *
- * Copyright (c) 2012 KW iTech, Inc.
- * All rights reserved.
- */
 package devnoh.awsmon.controller;
 
 import com.amazonaws.services.ec2.AmazonEC2;

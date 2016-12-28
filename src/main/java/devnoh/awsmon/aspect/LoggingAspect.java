@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by Sehwan Noh on 10/22/16.
+ * Created by devnoh on 10/22/16.
  */
 @Aspect
 @Component
