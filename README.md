@@ -62,8 +62,6 @@ $ docker push devnoh/awsmon:0.0.1
 $ docker run -it --rm -p 8888:8080 -v /Users/devnoh:/path/to -e "AWS_CREDENTIAL_PROFILES_FILE=/path/to/.aws/credentials" --name myawsmon devnoh/awsmon
 ```
 
-Access localhost: http://localhost:8888
-
 ## References
 
 * http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/aws-sdk-java-dg.pdf
