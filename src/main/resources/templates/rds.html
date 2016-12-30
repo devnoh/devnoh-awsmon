@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>AWS Monitor</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" th:href="@{/css/tablesorter.css}"/>
+    <script type="text/javascript" th:src="@{/js/jquery.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.tablesorter.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.cookie.js}"></script>
+</head>
+<body>
+<div th:replace="layout/header :: header"/>
+<div id="content">
+    <div th:replace="layout/tabmenu :: tabmenu(menu='rds')"/>
+
+    <div id="tabcontent">
+
+        <h1>Relational Database Service (RDS)</h1>
+
+        <div style="text-align: right; margin-top: -30px;">
+            <form id="regionForm" th:action="@{/rds}" method="get">
+                <select id="region" name="region" onchange="selectRegion();">
+                    <!--#<option value="">- region -</option>#-->
+                </select>
+            </form>
+        </div>
+
+        <div id="dataList">
+            <table id="tableList" class="tablesorter">
+                <thead>
+                <tr>
+                    <!--#<th style="text-align: center; width: 4%;">No</th>#-->
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Status</th>
+                    <th>Engine</th>
+                    <th>DB Name</th>
+                    <th>Storage</th>
+                    <th>IOPS</th>
+                    <th>Create Time</th>
+                    <th>Latest Restorable Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="rdsInfo,rowStat : ${rdsList}">
+                    <!--#<td th:text="${rowStat.index}"></td>#-->
+                    <td th:text="${rdsInfo.name}" style="font-weight: bold;"></td>
+                    <td th:text="${rdsInfo.instanceClass}" style="white-space: nowrap"></td>
+                    <td th:switch="${rdsInfo.status}" style="white-space: nowrap;">
+                        <span th:case="'available'" th:text="${rdsInfo.status}" style="color:green;"></span>
+                        <span th:case="*" th:text="${rdsInfo.status}" style="color:red;"></span>
+                    </td>
+                    <td th:text="${rdsInfo.engine + ' ' + rdsInfo.engineVersion}"></td>
+                    <td th:text="${rdsInfo.dbName}"></td>
+                    <td align="right" th:text="${rdsInfo.storage + 'GB'}"></td>
+                    <td align="right" th:text="${rdsInfo.iops}"></td>
+                    <td th:text="${#dates.format(new java.util.Date(rdsInfo.createTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(new java.util.Date(rdsInfo.latestRestorableTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div style="float: right; text-align: right; font-size: 9px; color: #666;">
+                Updated: <span th:text="${#dates.format(updated, 'yyyy-MM-dd HH:mm:ss')}"></span>
+            </div>
+            <div th:inline="text">
+                [[${rdsList.size()}]] instances
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div th:replace="layout/footer :: footer"/>
+
+<script th:inline="javascript">
+    $('#tableList').tablesorter();
+
+    var region = /*[[${region}]]*/'';
+
+    function selectRegion() {
+        $.cookie('region', $('#region').val());
+        $('#dataList').hide();
+        $('#dataList').after('<div style="text-align: center; padding: 20px;"><img src="/images/loading.gif"/></div>');
+        $('#regionForm').submit();
+    }
+
+    function loadRegions() {
+        $.get('/region/api/list', function (data, status) {
+            $.each(data, function () {
+                $('#region').append('<option value="' + this['code'] + '">' + this['name'] + '</option>');
+            })
+            $('#region').val(region);
+        });
+    }
+    loadRegions();
+</script>
+
+</body>
+</html>

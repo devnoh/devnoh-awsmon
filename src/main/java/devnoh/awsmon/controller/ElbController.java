@@ -34,7 +34,6 @@ public class ElbController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    //public String list(@RequestParam(defaultValue = AwsRegions.DEFAULT_REGION) String region,
     public String list(String region, // get from HandlerMethodArgumentResolver
                        Model model, HttpServletRequest request, HttpServletResponse response) {
         logger.debug("region=" + region);
