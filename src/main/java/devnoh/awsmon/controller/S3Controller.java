@@ -38,9 +38,6 @@ public class S3Controller {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(String region, // get from HandlerMethodArgumentResolver
                        Model model, HttpServletRequest request, HttpServletResponse response) {
-        //logger.debug("region=" + region);
-        //s3Client.setEndpoint(AwsClients.getS3Endpoint(region));
-
         List<Bucket> buckets = s3Client.listBuckets();
         logger.debug("buckets.size() = " + buckets.size());
 

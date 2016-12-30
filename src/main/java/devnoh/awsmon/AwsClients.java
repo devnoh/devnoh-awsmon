@@ -83,16 +83,6 @@ public class AwsClients {
         return Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonRDS.ENDPOINT_PREFIX);
     }
 
-    /*
-    public static String getS3Endpoint(String region) {
-        return Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonS3.ENDPOINT_PREFIX);
-    }
-    */
-
-    public static String getRoute53Endpoint(String region) {
-        return Region.getRegion(Regions.fromName(region)).getServiceEndpoint(AmazonRoute53.ENDPOINT_PREFIX);
-    }
-
     //
     // Extra
     //
