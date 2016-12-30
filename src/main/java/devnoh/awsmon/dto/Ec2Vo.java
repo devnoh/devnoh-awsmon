@@ -1,11 +1,7 @@
-package devnoh.awsmon.model;
-
-import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.ec2.model.Tag;
+package devnoh.awsmon.dto;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by devnoh on 9/29/16.

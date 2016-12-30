@@ -5,8 +5,8 @@ import com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRe
 import com.amazonaws.services.elasticloadbalancing.model.LoadBalancerDescription;
 import devnoh.awsmon.AwsClients;
 import devnoh.awsmon.AwsRegions;
-import devnoh.awsmon.model.ElbVo;
-import devnoh.awsmon.model.InstanceVo;
+import devnoh.awsmon.dto.ElbVo;
+import devnoh.awsmon.dto.InstanceVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

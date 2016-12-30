@@ -1,10 +1,7 @@
 package devnoh.awsmon.controller;
 
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.RegionUtils;
-import com.amazonaws.regions.Regions;
 import devnoh.awsmon.AwsRegions;
-import devnoh.awsmon.model.RegionVo;
+import devnoh.awsmon.dto.RegionVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;

@@ -1,7 +1,7 @@
 package devnoh.awsmon.service;
 
-import devnoh.awsmon.entity.Role;
-import devnoh.awsmon.entity.User;
+import devnoh.awsmon.domain.Role;
+import devnoh.awsmon.domain.User;
 import devnoh.awsmon.repository.RoleRepository;
 import devnoh.awsmon.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

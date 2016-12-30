@@ -1,7 +1,6 @@
 package devnoh.awsmon.service;
 
-import devnoh.awsmon.entity.User;
-import devnoh.awsmon.service.UserService;
+import devnoh.awsmon.domain.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

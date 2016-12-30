@@ -1,4 +1,4 @@
-package devnoh.awsmon.model;
+package devnoh.awsmon.dto;
 
 /**
  * Created by sehnoh on 9/29/16.

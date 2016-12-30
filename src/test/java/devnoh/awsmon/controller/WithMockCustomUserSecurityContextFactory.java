@@ -1,7 +1,7 @@
 package devnoh.awsmon.controller;
 
-import devnoh.awsmon.entity.Role;
-import devnoh.awsmon.entity.User;
+import devnoh.awsmon.domain.Role;
+import devnoh.awsmon.domain.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

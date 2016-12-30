@@ -4,7 +4,7 @@ import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.*;
 import devnoh.awsmon.AwsClients;
 import devnoh.awsmon.AwsRegions;
-import devnoh.awsmon.model.Ec2Vo;
+import devnoh.awsmon.dto.Ec2Vo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;

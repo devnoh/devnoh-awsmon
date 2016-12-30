@@ -1,6 +1,6 @@
 package devnoh.awsmon.repository;
 
-import devnoh.awsmon.entity.Role;
+import devnoh.awsmon.domain.Role;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

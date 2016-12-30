@@ -1,12 +1,7 @@
-package devnoh.awsmon.model;
+package devnoh.awsmon.dto;
 
-import com.amazonaws.services.ec2.model.Instance;
-import com.amazonaws.services.elasticloadbalancing.model.LoadBalancerDescription;
-
-import java.time.Duration;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by devnoh on 9/29/16.

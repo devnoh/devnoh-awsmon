@@ -1,6 +1,6 @@
 package devnoh.awsmon.repository;
 
-import devnoh.awsmon.entity.User;
+import devnoh.awsmon.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

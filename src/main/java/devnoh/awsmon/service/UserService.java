@@ -1,9 +1,7 @@
 package devnoh.awsmon.service;
 
-import devnoh.awsmon.entity.User;
-import org.springframework.context.annotation.Bean;
+import devnoh.awsmon.domain.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by devnoh on 9/16/16.

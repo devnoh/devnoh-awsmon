@@ -1,20 +1,15 @@
 package devnoh.awsmon.service;
 
-import devnoh.awsmon.entity.Role;
-import devnoh.awsmon.entity.User;
+import devnoh.awsmon.domain.Role;
+import devnoh.awsmon.domain.User;
 import devnoh.awsmon.repository.RoleRepository;
 import devnoh.awsmon.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
