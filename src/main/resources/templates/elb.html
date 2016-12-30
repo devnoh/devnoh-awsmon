@@ -21,7 +21,7 @@
         <div style="text-align: right; margin-top: -30px;">
             <form id="regionForm" th:action="@{/elb}" method="get">
                 <select id="region" name="region" onchange="selectRegion();">
-                    <!--#<option value="">- region -</option>#-->
+                    <!--/*<option value="">- region -</option>*/-->
                 </select>
             </form>
         </div>
@@ -30,7 +30,7 @@
             <table id="tableList" class="tablesorter">
                 <thead>
                 <tr>
-                    <!--#<th style="text-align: center; width: 4%;">No</th>#-->
+                    <!--/*<th style="text-align: center; width: 4%;">No</th>*/-->
                     <th>Load Balancer Name</th>
                     <th>DNS Name</th>
                     <th>Scheme</th>
@@ -41,13 +41,13 @@
                 </thead>
                 <tbody>
                 <tr th:each="elbInfo,rowStat : ${elbList}">
-                    <!--#<td th:text="${rowStat.index}"></td>#-->
+                    <!--/*<td th:text="${rowStat.index}"></td>*/-->
                     <td th:text="${elbInfo.name}" style="font-weight: bold;"></td>
                     <td th:text="${elbInfo.dnsName}" style="white-space: nowrap"></td>
                     <td th:text="${elbInfo.scheme}"></td>
                     <td th:utext="${#strings.listJoin(elbInfo.portConfigs, '&lt;br/&gt;')}"></td>
-                    <!--#<td th:utext="${#strings.listJoin(elbInfo.instanceIds, '&lt;br/&gt;')}"></td>#-->
-                    <!--#<td><span th:each="instance : ${elbInfo.instances}" th:inline="text">[[${instance.name}]] ([[${instance.id}]])<br/></span></td>#-->
+                    <!--/*<td th:utext="${#strings.listJoin(elbInfo.instanceIds, '&lt;br/&gt;')}"></td>*/-->
+                    <!--/*<td><span th:each="instance : ${elbInfo.instances}" th:inline="text">[[${instance.name}]] ([[${instance.id}]])<br/></span></td>*/-->
                     <td><span th:each="instance : ${elbInfo.instances}" th:utext="${instance.name == null ? instance.id + '&lt;br/&gt;': instance.name + ' (' + instance.id + ')&lt;br/&gt;'}"></span></td>
                     <td th:text="${#dates.format(new java.util.Date(elbInfo.createdTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
                 </tr>

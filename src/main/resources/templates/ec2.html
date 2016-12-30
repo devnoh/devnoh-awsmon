@@ -23,7 +23,7 @@
         <div style="text-align: right; margin-top: -30px;">
             <form id="regionForm" th:action="@{/ec2}" method="get">
                 <select id="region" name="region" onchange="selectRegion();">
-                    <!--#<option value="">- region -</option>#-->
+                    <!--/*<option value="">- region -</option>*/-->
                 </select>
             </form>
         </div>
@@ -32,7 +32,7 @@
             <table id="tableList" class="tablesorter">
                 <thead>
                 <tr>
-                    <!--#<th style="text-align: center; width: 4%;">No</th>#-->
+                    <!--/*<th style="text-align: center; width: 4%;">No</th>*/-->
                     <th>Name</th>
                     <th>Instance ID</th>
                     <th>Type</th>
@@ -43,13 +43,13 @@
                     <th>Security Groups</th>
                     <th>Launch Time</th>
                     <th>Uptime</th>
-                    <!--#<th>Tags</th>#-->
+                    <!--/*<th>Tags</th>*/-->
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="ec2Info,rowStat : ${ec2List}" th:id="'tr' + ${ec2Info.instanceId}"
                     th:title="${#strings.listJoin(ec2Info.tags, ', ')}">
-                    <!--#<td th:text="${rowStat.index}"></td>#-->
+                    <!--/*<td th:text="${rowStat.index}"></td>*/-->
                     <td th:text="${ec2Info.name}" style="font-weight: bold;"></td>
                     <td th:text="${ec2Info.instanceId}" style="white-space: nowrap"></td>
                     <td th:text="${ec2Info.instanceType}"></td>
@@ -78,7 +78,7 @@
                     <td th:text="${#strings.listJoin(ec2Info.securityGroups, ', ')}"></td>
                     <td th:text="${#dates.format(new java.util.Date(ec2Info.launchTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
                     <td th:text="${ec2Info.stateCode == 16 ? ec2Info.uptimeInDays + ' days' : '-'}"></td>
-                    <!--#<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>#-->
+                    <!--/*<td th:utext="${#strings.listJoin(ec2Info.tags, '&lt;br/&gt;')}"></td>*/-->
                 </tr>
                 </tbody>
             </table>

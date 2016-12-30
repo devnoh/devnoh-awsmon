@@ -14,51 +14,39 @@
 <body>
 <div th:replace="layout/header :: header"/>
 <div id="content">
-    <div th:replace="layout/tabmenu :: tabmenu(menu='rds')"/>
+    <div th:replace="layout/tabmenu :: tabmenu(menu='s3')"/>
 
     <div id="tabcontent">
 
-        <h1>Relational Database Service (RDS)</h1>
+        <h1>Simple Storage Service (S3)</h1>
 
+        <!--/*
         <div style="text-align: right; margin-top: -30px;">
-            <form id="regionForm" th:action="@{/rds}" method="get">
+            <form id="regionForm" th:action="@{/s3}" method="get">
                 <select id="region" name="region" onchange="selectRegion();">
-                    <!--/*<option value="">- region -</option>*/-->
+                    <option value="">- region -</option>
                 </select>
             </form>
-        </div>
+        </div>*/-->
 
         <div id="dataList">
             <table id="tableList" class="tablesorter">
                 <thead>
                 <tr>
                     <!--/*<th style="text-align: center; width: 4%;">No</th>*/-->
-                    <th>Name</th>
-                    <th>Class</th>
-                    <th>Status</th>
-                    <th>Engine</th>
-                    <th>DB Name</th>
-                    <th>Storage</th>
-                    <th>IOPS</th>
+                    <th>Bucket Name</th>
                     <th>Create Time</th>
-                    <th>Latest Restorable Time</th>
+                    <th># of Items</th>
+                    <th>Total Size</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="rdsInfo,rowStat : ${rdsList}">
+                <tr th:each="s3Info,rowStat : ${s3List}">
                     <!--/*<td th:text="${rowStat.index}"></td>*/-->
-                    <td th:text="${rdsInfo.name}" style="font-weight: bold;"></td>
-                    <td th:text="${rdsInfo.instanceClass}" style="white-space: nowrap"></td>
-                    <td th:switch="${rdsInfo.status}" style="white-space: nowrap;">
-                        <span th:case="'available'" th:text="${rdsInfo.status}" style="color:green;"></span>
-                        <span th:case="*" th:text="${rdsInfo.status}" style="color:red;"></span>
-                    </td>
-                    <td th:text="${rdsInfo.engine + ' ' + rdsInfo.engineVersion}"></td>
-                    <td th:text="${rdsInfo.dbName}"></td>
-                    <td align="right" th:text="${rdsInfo.storage + ' GB'}"></td>
-                    <td align="right" th:text="${rdsInfo.iops}"></td>
-                    <td th:text="${#dates.format(new java.util.Date(rdsInfo.createTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
-                    <td th:text="${#dates.format(new java.util.Date(rdsInfo.latestRestorableTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${s3Info.name}" style="font-weight: bold;"></td>
+                    <td th:text="${#dates.format(new java.util.Date(s3Info.createTime), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td align="right" th:text="${#numbers.formatInteger(s3Info.itemCount,0,'DEFAULT')}"></td>
+                    <td align="right" th:text="${#numbers.formatInteger(s3Info.totalSize/(1024*1024),0,'DEFAULT') + ' MB'}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -67,7 +55,7 @@
                 Updated: <span th:text="${#dates.format(updated, 'yyyy-MM-dd HH:mm:ss')}"></span>
             </div>
             <div th:inline="text">
-                [[${rdsList.size()}]] instances
+                [[${s3List.size()}]] instances
             </div>
         </div>
 
