@@ -55,7 +55,7 @@
                 Updated: <span th:text="${#dates.format(updated, 'yyyy-MM-dd HH:mm:ss')}"></span>
             </div>
             <div th:inline="text">
-                [[${s3List.size()}]] instances
+                [[${s3List.size()}]] buckets
             </div>
         </div>
 
@@ -66,25 +66,6 @@
 
 <script th:inline="javascript">
     $('#tableList').tablesorter();
-
-    var region = /*[[${region}]]*/'';
-
-    function selectRegion() {
-        $.cookie('region', $('#region').val());
-        $('#dataList').hide();
-        $('#dataList').after('<div style="text-align: center; padding: 20px;"><img src="/images/loading.gif"/></div>');
-        $('#regionForm').submit();
-    }
-
-    function loadRegions() {
-        $.get('/region/api/list', function (data, status) {
-            $.each(data, function () {
-                $('#region').append('<option value="' + this['code'] + '">' + this['name'] + '</option>');
-            })
-            $('#region').val(region);
-        });
-    }
-    loadRegions();
 </script>
 
 </body>
