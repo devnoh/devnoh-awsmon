@@ -2,10 +2,10 @@ package devnoh.awsmon;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -23,16 +23,16 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ServerWebUserTests {
 
-    private static FirefoxDriver browser;
-    //private static ChromeDriver browser;
+    //private static FirefoxDriver browser;
+    private static ChromeDriver browser;
 
     @LocalServerPort
     private int port;
 
     @BeforeClass
     public static void openBrowser() {
-        browser = new FirefoxDriver();
-        //browser = new ChromeDriver();
+        //browser = new FirefoxDriver();
+        browser = new ChromeDriver();
         browser.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
@@ -42,6 +42,7 @@ public class ServerWebUserTests {
         browser.quit();
     }
 
+    @Ignore
     @Test
     public void testLogin() throws Exception {
         String baseUrl = "http://localhost:" + port;
