@@ -13,6 +13,10 @@ A simple monitoring application for Amazon EC2, Load Balancing, S3, RDS, Route 5
 
 ```
 
+## Build Status
+
+[![Build Status](https://travis-ci.org/devnoh/devnoh-awsmon.svg?branch=master)](https://travis-ci.org/devnoh/devnoh-awsmon)
+
 ## Solutions
 
 * Java 8
